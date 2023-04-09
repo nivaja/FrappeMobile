@@ -62,7 +62,7 @@ class DocListView extends GetView<DocTypeListViewController>{
         ),
       ),
       name: data["name"],
-      status:data["status"],
+      status:data["status"]??"",
     );
   }
 

@@ -45,7 +45,7 @@ class FormController extends GetxController {
     update();
   }
   Future saveDoc(Map data) async {
-    await FrappeAPI.saveDocs(docType,{"name":"Sales Trip GEO1223","owner":"nivajasingh359@gmail.com","creation":"2023-04-08 14:04:22.019906","modified":DateTime.now().toString(),"modified_by":"nivajasingh359@gmail.com","docstatus":0,"idx":0,"naming_series":"CUST-.YYYY.-","customer_name":"Sales Trip GEO1245234","customer_type":"Company","customer_group":"Individual","territory":"Nepal","is_internal_customer":0,"language":"en","default_commission_rate":0,"so_required":0,"dn_required":0,"is_frozen":0,"disabled":0,"doctype":"Customer","sales_team":[],"companies":[],"accounts":[],"credit_limits":[],"__onload":{"addr_list":[],"contact_list":[],"dashboard_info":[]},"__last_sync_on":DateTime.now().toString(),"__unsaved":1});
+    await FrappeAPI.saveDocs(docType,data);
     isDirty.value = false;
     update();
   }
