@@ -12,7 +12,7 @@ import '../../../widget/frappe_button.dart';
 import '../controllers/form_controller.dart';
 
 class FormView extends GetView<FormController> {
-   final  String docType;
+  final  String docType;
   final String name;
    FormView({
     required this.name,
@@ -21,13 +21,15 @@ class FormView extends GetView<FormController> {
 
   }) : super(key: key);
    final FormHelper _formHelper = FormHelper();
-  @override
+   @override
   Widget build(BuildContext context) {
     return GetBuilder<FormController>(
-      init: FormController(docType: docType,name: name),
-      builder:(_)=> Scaffold(
+      tag: name,
+      id:name,
+      init: FormController(name: name, docType: docType),
+      builder: (formController)=> Scaffold(
         appBar: AppBar(
-          title:  Text(name),
+          title:  Text(formController.name),
 
           actions: [
             Padding(
@@ -38,9 +40,9 @@ class FormView extends GetView<FormController> {
               child: FrappeFlatButton(
                 buttonType: ButtonType.primary,
                 title: 'Update',
-                onPressed: !controller.isDirty.value
+                onPressed: !formController.isDirty
                     ? () => FrappeAlert.warnAlert(title:"No changes in document" )
-                    : () => controller.updateDoc(
+                    : () => formController.updateDoc(
                     _formHelper.getFormValue()
                 ),
               ),
@@ -56,13 +58,13 @@ class FormView extends GetView<FormController> {
               onChanged: (){
 
                 _formHelper.save();
-                controller.handleChange();
+                formController.handleChange();
               },
 
               child: Column(
                   children: generateLayout(
-                    fields: controller.fields.value,
-                    doc: controller.doc.value,
+                    fields: formController.fields,
+                    doc: formController.doc,
                   )
               ),
             )

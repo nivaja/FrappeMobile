@@ -6,6 +6,8 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'api_interceptor.dart';
+
 class ApiService {
   static final ApiService _instance = ApiService._internal();
   static Dio? dio;
@@ -24,8 +26,10 @@ class ApiService {
     // set up Dio instance with base URL, interceptors, etc.
     dio=Dio(
       BaseOptions(baseUrl: '$baseUrl/api')
-    )..interceptors.add(
-      CookieManager(await _getCookiePath())
+    )..interceptors.addAll(
+      [CookieManager(await _getCookiePath()),
+        DioInterceptor()
+      ]
               );
     dio?.options.connectTimeout = 60 * 1000;
     dio?.options.receiveTimeout = 60 * 1000;

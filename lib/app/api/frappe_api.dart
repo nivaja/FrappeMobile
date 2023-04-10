@@ -21,7 +21,6 @@ class FrappeAPI{
       );
 
       if (response.statusCode == HttpStatus.ok) {
-        print(response.data);
         List metaFields = response.data["docs"][0]["fields"];
         response.data["docs"][0]["field_map"] = {};
 
@@ -145,7 +144,7 @@ class FrappeAPI{
           throw ErrorResponse(statusMessage: error.message);
         }
       } else {
-        throw e;
+        rethrow;
       }
     }
   }

@@ -99,8 +99,7 @@ class FormBuilderTable<T> extends FormBuilderField<T> {
                             );
                           },
                         ),
-                      ) ??
-                          null;
+                      );
 
                       if (v != null) {
                         value[index] = v;
@@ -204,11 +203,10 @@ class _TableElementState extends State<TableElement> {
           ),
         ],
       ),
-      // body: FormView(
-      //   fields: widget.meta.fields,
-      //   formHelper: formHelper,
-      //   doc: widget.doc,
-      // ),
+      body: FormView(
+        name: widget.doc['name'],
+        docType: widget.meta.name
+      ),
     );
   }
 }
