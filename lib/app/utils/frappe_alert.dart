@@ -12,59 +12,65 @@ class FrappeAlert{
     required String title,
     required MaterialColor color,
     String? subtitle,
-    Duration aleartDuration = const Duration(seconds: 5),
+    Duration alertDuration = const Duration(seconds: 3),
 }){
-    var toast = Material(child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
-        color: color[100],
-      ),
-      child: ListTile(
-        title: Row(
-          children: [
-            FrappeIcon(
-              icon,
-              color: color,
-            ),
-            SizedBox(
-              width: 12.0,
-            ),
-            Flexible(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: color[600],
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-        subtitle: subtitle != null
-            ? Row(
-          children: [
-            SizedBox(
-              width: 36.0,
-            ),
-            Flexible(
-              child: Text(
-                subtitle,
-                style: TextStyle(
-                  color: color[600],
-                ),
-              ),
-            )
-          ],
-        )
-            : null,
-      ),
-    )
-    );
 
-    Get.dialog(
-      toast
-    );
+  Get.showSnackbar(
+      GetSnackBar(
+        messageText: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6.0),
+            color: color[100],
+          ),
+          child: ListTile(
+            title: Row(
+              children: [
+                FrappeIcon(
+                  icon,
+                  color: color,
+                ),
+                const SizedBox(
+                  width: 12.0,
+                ),
+                Flexible(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: color[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            subtitle: subtitle != null
+                ? Row(
+              children: [
+                const SizedBox(
+                  width: 36.0,
+                ),
+                Flexible(
+                  child: Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: color[600],
+                    ),
+                  ),
+                )
+              ],
+            )
+                : null,
+          ),
+        ),
+        duration:  alertDuration,
+        backgroundColor: Colors.transparent,
+        animationDuration: const Duration(milliseconds: 500),
+
+      )
+  );
+
+
   }
 
   static infoAlert({
@@ -86,7 +92,7 @@ class FrappeAlert{
    
     String? subtitle,
   }) {
-    FrappeAlert.showAlert(
+     FrappeAlert.showAlert(
       icon: FrappeIcons.warning,
       title: title,
       
@@ -117,7 +123,6 @@ class FrappeAlert{
     FrappeAlert.showAlert(
       icon: FrappeIcons.success,
       title: title,
-      
       color: FrappePalette.darkGreen,
       subtitle: subtitle,
     );

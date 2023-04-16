@@ -15,7 +15,7 @@ class ListItem extends StatelessWidget {
 
 
 
-  final String status;
+  final List status;
 
 
   final void Function() onListTap;
@@ -48,7 +48,7 @@ class ListItem extends StatelessWidget {
         ),
         elevation: 0,
         child: Container(
-          height: 112,
+          height: 100,
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -112,32 +112,13 @@ class ListItem extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                height: 5,
+                height: 10,
               ),
               Row(
                 children: <Widget>[
                   Indicator.buildStatusButton(
-                    doctype,
-                    status,
+                   status,
                   ),
-                  VerticalDivider(),
-                  FrappeIcon(
-                    FrappeIcons.message_1,
-                    size: 16,
-                    color: FrappePalette.grey[500],
-                  ),
-                  SizedBox(
-                    width: 6.0,
-                  ),
-
-                  VerticalDivider(),
-
-                  SizedBox(
-                    width: 6.0,
-                  ),
-
-                  Spacer(),
-
                 ],
               ),
             ],

@@ -1,3 +1,6 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:get/get.dart';
+
 import 'model/doc_type_response.dart';
 
 class ErrorResponse {

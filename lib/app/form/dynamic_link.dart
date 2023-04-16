@@ -64,8 +64,9 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
     //   enabled = true;
     // }
 
-    if (widget.doc[widget.doctypeField.fieldname] != null &&
-        widget.doctypeField.setOnlyOnce == 1) {
+    if ((widget.doc[widget.doctypeField.fieldname] != null &&
+        widget.doctypeField.setOnlyOnce == 1) ||
+        widget.doctypeField.readOnly == 1) {
       enabled = false;
     } else {
       enabled = true;
@@ -151,13 +152,17 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
                 (query) async {
               var lowercaseQuery = query.toLowerCase();
 
-                var response = await FrappeAPI.searchLink(
-                  doctype: widget.doc[widget.doctypeField.options],
-                  txt: lowercaseQuery,
-                );
+              var response = await FrappeAPI.searchLink(
+                doctype: widget.doc[widget.doctypeField.options],
+                txt: lowercaseQuery,
+              );
 
-                return response["results"];
-              }
+              return response["results"];
+            },
+        noItemsFoundBuilder: (context) {
+          return TextButton(onPressed: () {},
+              child: Row(children: const [Icon(Icons.add), Text('Add New')],));
+        },
       ),
     );
   }

@@ -16,6 +16,15 @@ class GetDocResponse {
     }
     docinfo = Docinfo.fromJson(json['docinfo']);
   }
+  GetDocResponse.fromResponse(Map<String, dynamic> response) {
+    if (response['data'] != null) {
+      docs = [];
+      response['data'].forEach((v) {
+        docs.add(v);
+      });
+    }
+    docinfo = Docinfo.fromJson(response['docinfo']);
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -406,7 +415,7 @@ class Version {
   });
 
   Version.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
+    name = json['name'].toString();
     owner = json['owner'];
     creation = json['creation'];
     data = json['data'];

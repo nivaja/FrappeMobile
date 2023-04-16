@@ -1,49 +1,89 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frappe_mobile_custom/app/modules/form/bindings/form_binding.dart';
+import 'package:frappe_mobile_custom/app/modules/form/views/just_form_view.dart';
+import 'package:frappe_mobile_custom/app/utils/frappe_icon.dart';
+import 'package:frappe_mobile_custom/app/widget/app_bar.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:get/get.dart';
 
+import '../../../generic/connectivity_controller.dart';
 import '../../form/views/form_view.dart';
+import '../../form/views/new_form_view.dart';
 import '../controllers/list_view_controller.dart';
 import 'list_item.dart';
 
 class DocListView extends GetView<DocTypeListViewController>{
-  String DocType;
+  String docType;
+  final _refreshController =RefreshController(initialRefresh: false);
 
-  DocListView({Key? key, required this.DocType}) : super(key: key);
+  DocListView({Key? key, required this.docType}) : super(key: key);
+  final _connectivityController = Get.find<ConnectivityController>();
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() =>DocTypeListViewController());
-    controller.getList(DocType);
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('ListViewView'),
-          centerTitle: true,
-        ),
-        body: Obx(()=>
-            ListView.builder(
-                itemCount:controller.docList.length,
-                itemBuilder: ((buildContext, index) {
-              late var e = controller.docList[index] as Map;
-              return _generateItem(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        Get.to(()=>NewFormView(docType: docType,));
+      },
+        child: const Icon(Icons.add),
 
-                data: e,
-                onListTap: (){
-                    Get.to(
-                        ()=>FormView(
-                          name:e['name'],
-                          docType:DocType,
-                        )
+      ),
+        appBar: appBar(title: docType),
+        body: Column(
+          children: [
+            Obx(() =>_showConnectionStatus()),
+            Expanded(
+              child: GetBuilder<DocTypeListViewController>(
+                init: DocTypeListViewController(docType: docType),
+                builder: (docTypeListController) =>SmartRefresher(
+                  enablePullUp: true,
+                  controller:  _refreshController,
+                  header: const ClassicHeader(),
+                  onRefresh: ()=>_onRefresh(docTypeListController),
+                  onLoading: ()=>_onLoading(),
 
-                    );
-                },
+                  child: ListView.builder(
+                      itemCount:docTypeListController.docList.length,
+                      itemBuilder: ((buildContext, index) {
+                        late var e = docTypeListController.docList[index] as Map;
+                        return _generateItem(
 
-              );
-            }))      )
+                          data: e,
+                          onListTap: (){
+                            Get.to(
+                                    ()=>FormView(
+                                  name:e['name'],
+                                  docType:docTypeListController.docType,
+                                ),
+                              binding: FormBinding(docType: docTypeListController.docType, name: e['name'])
+
+                            );
+                          },
+
+                        );
+                      })),
+                ),
+
+    ),
+            ),
+          ],
+        )
     );
   }
 
+  _onRefresh(DocTypeListViewController controller)async{
+       await controller.onRefresh();
+       _refreshController.refreshCompleted();
+       _refreshController.footerMode?.value=LoadStatus.canLoading;
+  }
+  _onLoading()async{
+    await controller.getDocList(refreshController: _refreshController);
+  }
 
   Widget _generateItem({
     required Map data,
@@ -62,7 +102,27 @@ class DocListView extends GetView<DocTypeListViewController>{
         ),
       ),
       name: data["name"],
-      status:data["status"]??"",
+      status: [data["docstatus"], data["status"]],
+    );
+  }
+
+  Widget _showConnectionStatus(){
+    switch(_connectivityController.connectionType.value){
+      case 1:
+        return _connectionWidget('Wifi Connected', Colors.lightGreen);
+      case 2:
+        return _connectionWidget('Mobile Data Connected', Colors.lightGreen);
+      default:
+        return _connectionWidget('No Internet', Colors.yellow);
+    }
+  }
+  Widget _connectionWidget(String msg, Color color){
+    return Container(
+      width: double.maxFinite,
+      height: 25,
+      alignment: Alignment.center,
+      color: color,
+      child: Text(msg),
     );
   }
 

@@ -38,15 +38,17 @@ class Date extends StatelessWidget with  ControlInput {
 
     return FormBuilderDateTimePicker(
       key: key,
+
+      enabled: doctypeField.readOnly != 1,
       inputType: InputType.date,
       valueTransformer: (val) {
         return val?.toIso8601String();
       },
       format: DateFormat(
-        "dd-mm-yyyy",
+        "dd-MM-yyyy",
       ),
       initialValue:
-      doc != null ? parseDate(doc![doctypeField.fieldname]) : null,
+      doc != null ? parseDate(doc![doctypeField.fieldname]):null,
       keyboardType: TextInputType.number,
       name: doctypeField.fieldname,
       decoration: Palette.formFieldDecoration(

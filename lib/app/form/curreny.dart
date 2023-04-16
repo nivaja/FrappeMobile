@@ -7,13 +7,13 @@ import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
 import 'control.dart';
 
-class Float extends StatelessWidget with  ControlInput {
+class Currency extends StatelessWidget with ControlInput {
   final DoctypeField doctypeField;
 
   final Key? key;
   final Map? doc;
 
-  const Float({
+  const Currency({
     required this.doctypeField,
     this.key,
     this.doc,
@@ -21,7 +21,7 @@ class Float extends StatelessWidget with  ControlInput {
 
   @override
   Widget build(BuildContext context) {
-    List<String? Function(dynamic?)> validators = [];
+    List<String? Function(dynamic)> validators = [];
 
     var f = setMandatory(doctypeField);
 

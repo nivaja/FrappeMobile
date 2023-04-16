@@ -44,6 +44,7 @@ class DatetimeField extends StatelessWidget with  ControlInput {
 
     return FormBuilderDateTimePicker(
       key: key,
+      enabled: doctypeField.readOnly != 1,
       valueTransformer: (val) {
         return val?.toIso8601String();
       },

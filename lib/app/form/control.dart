@@ -8,6 +8,7 @@ import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
 import '../widget/expandable_tile.dart';
 import '../widget/section.dart';
+import 'curreny.dart';
 import 'data.dart';
 import 'date.dart';
 import 'date_time.dart';
@@ -21,6 +22,7 @@ import 'time.dart';
 
 
 Widget makeControl({
+  required String docType,
   required DoctypeField field,
   required Map doc,
   // OnControlChanged? onControlChanged,
@@ -32,6 +34,7 @@ Widget makeControl({
     case "Link":
       {
         control = LinkField(
+          docType:docType,
           doctypeField: field,
           doc: doc,
         );
@@ -169,15 +172,15 @@ Widget makeControl({
       }
       break;
 
-    // case "Currency":
-    //   {
-    //     control = Currency(
-    //       doctypeField: field,
-    //       doc: doc,
-    //     );
-    //   }
-    //   break;
-    //
+    case "Currency":
+      {
+        control = Currency(
+          doctypeField: field,
+          doc: doc,
+        );
+      }
+      break;
+
     case "Int":
       {
         control = Int(
@@ -290,6 +293,7 @@ List<Widget> generateLayout({
   required List<DoctypeField> fields,
   // required OnControlChanged onControlChanged,
   required Map doc,
+  required String docType,
 }) {
   List<Widget> collapsibles = [];
   List<Widget> widgets = [];
@@ -318,6 +322,7 @@ List<Widget> generateLayout({
             top: 10,
           ),
           child: makeControl(
+            docType: docType,
             field: field,
             doc: doc,
             // onControlChanged: onControlChanged,
@@ -335,6 +340,7 @@ List<Widget> generateLayout({
             right: 16,
           ),
           child: makeControl(
+            docType: docType,
             field: field,
             doc: doc,
             // onControlChanged: onControlChanged,

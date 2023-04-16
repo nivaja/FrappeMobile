@@ -2,7 +2,9 @@ import 'package:frappe_mobile_custom/app/api/ApiService.dart';
 import 'package:get_storage/get_storage.dart';
 class Config {
   static final configContainer = GetStorage('Config');
-
+  bool get isLoggedIn => configContainer.read(
+    'isLoggedIn',
+  );
 
   String? get userId =>
       Uri.decodeFull(configContainer.read('userId'));
@@ -26,7 +28,7 @@ class Config {
   static Future set(String k, dynamic v) async {
     await configContainer.write(k, v);
   }
-  static Map<String,dynamic>? get(String k) {
+  static get(String k) {
     return configContainer.read(k);
   }
 

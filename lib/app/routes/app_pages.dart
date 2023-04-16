@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../config/config.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 
@@ -13,7 +14,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static var INITIAL = (Config.get('isLoggedIn') != null && Config.get('isLoggedIn') as bool == true)?Routes.HOME:Routes.LOGIN;
 
   static final routes = [
     GetPage(
@@ -26,10 +27,6 @@ class AppPages {
       page: () => LoginView(),
       binding: LoginBinding(),
     ),
-    GetPage(
-      name: _Paths.LIST_VIEW,
-      page: () => DocListView(DocType: 'Sales Invoice',),
-      binding: ListViewBinding(),
-    ),
+
   ];
 }

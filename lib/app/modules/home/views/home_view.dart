@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:frappe_mobile_custom/app/modules/list/bindings/list_view_binding.dart';
 import 'package:frappe_mobile_custom/app/widget/frappe_button.dart';
 
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import '../../../config/palette.dart';
 import '../../../form/control.dart';
 import '../../../utils/enums.dart';
 import '../../list/views/list_view_view.dart';
+import '../../login/views/login_view.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -21,7 +23,13 @@ class HomeView extends GetView<HomeController> {
       appBar: AppBar(
         title: const Text('HomeView'),
         centerTitle: true,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        actions: [
+          TextButton(onPressed: ()=>Get.off(LoginView()), child: Text('Login'))
+        ],
       ),
+
       body: SingleChildScrollView(
         child: FormBuilder(
           key: _formKey,
@@ -36,7 +44,7 @@ class HomeView extends GetView<HomeController> {
               FrappeFlatButton(onPressed: () {
                 if (_formKey.currentState?.saveAndValidate() ?? false) {
                   debugPrint(_formKey.currentState?.value.toString());
-                  Get.to(()=>DocListView( DocType: _formKey.currentState!.value['docType'].toString()));
+                  Get.to(()=>DocListView( docType: _formKey.currentState!.value['docType'].toString()),binding: ListViewBinding(docType:_formKey.currentState!.value['docType'].toString()));
                 } else {
                   debugPrint(_formKey.currentState?.value.toString());
                   debugPrint('validation failed');

@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:frappe_mobile_custom/app/api/ApiService.dart';
+import 'package:get/get.dart';
 
 import '../generic/common.dart';
 import '../generic/model/doc_type_response.dart';
@@ -16,11 +20,11 @@ class FrappeAPI{
     };
 
     try {
-      final response = await ApiService.dio!.get('/method/frappe.desk.form.load.getdoctype',
+        final response = await ApiService.dio!.get('/method/frappe.desk.form.load.getdoctype',
         queryParameters: queryParams,
       );
 
-      if (response.statusCode == HttpStatus.ok) {
+      if (response.statusCode == HttpStatus.ok || response.statusCode ==304) {
         List metaFields = response.data["docs"][0]["fields"];
         response.data["docs"][0]["field_map"] = {};
 
@@ -35,6 +39,7 @@ class FrappeAPI{
           statusMessage: response.statusMessage,
         );
       } else {
+        print('${response.statusMessage} -> ${response.statusCode}');
         throw ErrorResponse(
           statusMessage: response.statusMessage,
           statusCode: response.statusCode,
@@ -52,7 +57,7 @@ class FrappeAPI{
           throw ErrorResponse(statusMessage: error.message);
         }
       } else {
-        throw ErrorResponse();
+        rethrow;
       }
     }
   }
@@ -75,15 +80,17 @@ class FrappeAPI{
     }
 
     try {
-      final response = await ApiService.dio!.post(
-        '/method/frappe.desk.search.search_link',
-        data: queryParams,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
 
-        ),
+      final response = await ApiService.dio!.get(
+        '/method/frappe.desk.search.search_link',
+        queryParameters: queryParams,
+        // options: Options(
+        //   contentType: Headers.formUrlEncodedContentType,
+        //
+        // ),
+
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 304) {
          return response.data;
       } else if (response.statusCode == HttpStatus.forbidden) {
         throw ErrorResponse(
@@ -122,7 +129,7 @@ class FrappeAPI{
         queryParameters: queryParams,
            );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 304) {
         return GetDocResponse.fromJson(response.data);
       } else if (response.statusCode == 403) {
         throw ErrorResponse(
@@ -150,21 +157,21 @@ class FrappeAPI{
   }
 
 
-  static Future<GetDocResponse> cancelDoc(String doctype, String name) async {
+  static Future<Map> runDocMethod(String docType, String name,String method) async {
     var queryParams = {
-      'doctype': doctype,
-      'name': name,
+      'run_method': method,
     };
 
     try {
-      final response = await ApiService.dio!.get(
-        '/method/frappe.desk.form.save.cancel',
+      final response = await ApiService.dio!.post(
+        '/resource/$docType/$name',
         queryParameters: queryParams,
       );
+      if(response.statusCode ==200 || response.statusCode == 304){
+        return response.data;
+      }
 
-      if (response.statusCode == 200) {
-        return GetDocResponse.fromJson(response.data);
-      } else if (response.statusCode == 403) {
+      else if (response.statusCode == 403) {
         throw ErrorResponse(
           statusCode: response.statusCode,
           statusMessage: response.statusMessage,
@@ -184,7 +191,7 @@ class FrappeAPI{
           throw ErrorResponse(statusMessage: error.message);
         }
       } else {
-        throw e;
+        rethrow;
       }
     }
   }
@@ -202,10 +209,11 @@ class FrappeAPI{
     var queryParams = {
       'doctype': doctype,
       'fields': jsonEncode(fieldnames),
+      'page_length': pageLength.toString(),
 
     };
 
-    // queryParams['limit_start'] = offset.toString();
+    queryParams['limit_start'] = offset.toString();
 
     if (filters != null && filters.length != 0) {
       queryParams['filters'] = jsonEncode(filters);
@@ -214,14 +222,9 @@ class FrappeAPI{
     try {
       final response = await ApiService.dio!.get(
         '/method/frappe.desk.reportview.get',
-        queryParameters: queryParams,
-        options: Options(
-          validateStatus: (status) {
-            return status! < 500;
-          },
-        ),
+        queryParameters: queryParams
       );
-      if (response.statusCode == HttpStatus.ok) {
+      if (response.statusCode == HttpStatus.ok || response.statusCode==304) {
         var l = response.data["message"];
         var newL = [];
 
@@ -267,7 +270,7 @@ class FrappeAPI{
         }
       }
       else {
-        throw ErrorResponse();
+        rethrow;
       }
     }
   }
@@ -319,12 +322,20 @@ class FrappeAPI{
   }
 
   static Future saveDocs(String doctype, Map formValue) async {
+    var data = {
+      "doctype": doctype,
+      ...formValue,
+    };
+
     try {
-      final response = await ApiService.dio!.put(
-        '/resource/$doctype',
-        data: formValue,
+      final response = await ApiService.dio!.post(
+        '/method/frappe.desk.form.save.savedocs',
+        data: "doc=${Uri.encodeComponent(json.encode(data))}&action=Save",
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 304) {
         return response;
       } else {
         throw ErrorResponse();
@@ -332,12 +343,11 @@ class FrappeAPI{
     } catch (e) {
       if (e is DioError) {
         if (e.response != null &&
-            e.response!.data != null &&
-            e.response!.data["_server_messages"] != null) {
-          var errorMsg = getServerMessage(e.response!.data["_server_messages"]);
-
+            e.response?.data != null &&
+            e.response?.data["_server_messages"] != null) {
+          var errorMsg = getServerMessage(e.response?.data["_server_messages"]);
           throw ErrorResponse(
-            statusCode: e.response!.statusCode,
+            statusCode: e.response?.statusCode,
             statusMessage: errorMsg,
           );
         } else {
@@ -348,8 +358,8 @@ class FrappeAPI{
             );
           } else {
             throw ErrorResponse(
-              statusCode: e.response?.statusCode,
-              statusMessage: e.response?.statusMessage,
+              statusCode: e.error.statusCode,
+              statusMessage: e.error.statusMessage,
             );
           }
         }
@@ -358,6 +368,45 @@ class FrappeAPI{
       }
     }
 
+
+  }
+
+
+  static Future postComment(
+      String refDocType, String refName, String content, String email) async {
+    var queryParams = {
+      'reference_doctype': refDocType,
+      'reference_name': refName,
+      'content': content,
+      'comment_email': email,
+      'comment_by': email
+    };
+
+    final response = await ApiService.dio!.post(
+        '/method/frappe.desk.form.utils.add_comment',
+        data: queryParams,
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+    if (response.statusCode == 200) {
+    } else {
+      throw Exception('Something went wrong');
+    }
+  }
+  static Future deleteComment(String name) async {
+    var queryParams = {
+      'doctype': 'Comment',
+      'name': name,
+    };
+
+    final response = await ApiService.dio!.post('/method/frappe.client.delete',
+        data: queryParams,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ));
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception('Something went wrong');
+    }
   }
 
 }

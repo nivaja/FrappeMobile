@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:frappe_mobile_custom/app/api/ApiService.dart';
 import 'package:frappe_mobile_custom/app/api/frappe_api.dart';
-
 import '../config/frappe_icons.dart';
 import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
@@ -15,8 +13,9 @@ import 'control.dart';
 class LinkField extends StatefulWidget {
   final DoctypeField doctypeField;
   final Map? doc;
+  final String docType;
 
-  final key;
+  final GlobalKey<FormBuilderState>? key;
   final bool showInputBorder;
   final Function? onSuggestionSelected;
   final Function? noItemsFoundBuilder;
@@ -29,6 +28,7 @@ class LinkField extends StatefulWidget {
   LinkField({
     this.key,
     required this.doctypeField,
+    required this.docType,
     this.doc,
     this.prefixIcon,
     this.onSuggestionSelected,
@@ -98,6 +98,7 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
               widget.doc?[widget.doctypeField.fieldname] != ""
               ? IconButton(
             onPressed: () {
+              // Get.to(FormView(name: widget.doc![widget.doctypeField.fieldname], docType: widget.doctypeField.options));
               // pushNewScreen(
               //   context,
               //   screen: FormView(
@@ -105,7 +106,7 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
               //       name: widget.doc![widget.doctypeField.fieldname]),
               // );
             },
-            icon: FrappeIcon(
+            icon: const FrappeIcon(
               FrappeIcons.arrow_right_2,
               size: 14,
             ),
@@ -151,6 +152,29 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
                 return response["results"];
 
             },
+    //     noItemsFoundBuilder: (context) {
+    //       return TextButton(
+    //           onPressed: () async{
+    //             // Get.to(()=>NewFormView(docType: widget.doctypeField.fieldname));
+    //             print(widget.doctypeField.options);
+    //             var a = await Navigator.push(context,
+    //               MaterialPageRoute(
+    //                 builder: (context) =>  NewFormView(docType: widget.doctypeField.options,getData: true,),
+    //               ),
+    //             );
+    //     // print('a-> $a');
+    // }, child: Row(
+    //         children: [
+    //           Icon(Icons.add),
+    //           Text('Add New ${widget.doctypeField.options}')
+    //         ],
+    //       ),
+    //
+    //         // print(data);
+    //
+    //
+    //       );
+    //     },
       ),
     );
   }

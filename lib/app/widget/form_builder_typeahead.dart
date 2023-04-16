@@ -143,6 +143,10 @@ class FormBuilderTypeAhead<T> extends FormBuilderField<T> {
 
   /// If set to true, nothing will be shown if there are no results.
   /// [noItemsFoundBuilder] will also be ignored.
+  final WidgetBuilder? noItemsFoundBuilder;
+  ///
+  ///
+  ///
   ///
   /// Defaults to false.
   final bool hideOnEmpty;
@@ -215,7 +219,7 @@ TextEditingController? controller;
     this.getImmediateSuggestions = false,
     required this.selectionToTextTransformer,
     // required this.errorBuilder,
-    // required this.noItemsFoundBuilder,
+    this.noItemsFoundBuilder,
     // required this.loadingBuilder,
     this.debounceDuration = const Duration(milliseconds: 300),
     this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
@@ -298,6 +302,7 @@ TextEditingController? controller;
             keepSuggestionsOnSuggestionSelected:
             keepSuggestionsOnSuggestionSelected,
             hideKeyboard: hideKeyboard,
+            noItemsFoundBuilder: noItemsFoundBuilder
           );
         },
       );

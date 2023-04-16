@@ -2,8 +2,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'api_interceptor.dart';
@@ -25,34 +29,50 @@ class ApiService {
   Future init(String baseUrl) async {
     // set up Dio instance with base URL, interceptors, etc.
     dio=Dio(
-      BaseOptions(baseUrl: '$baseUrl/api')
+        BaseOptions(baseUrl: '$baseUrl/api')
     )..interceptors.addAll(
-      [CookieManager(await _getCookiePath()),
-        DioInterceptor()
-      ]
-              );
+        [
+          CookieManager(await _getCookiePath()),
+          DioInterceptor(),
+          DioCacheInterceptor(options: CacheOptions(
+              maxStale: const Duration(days: 7),
+              store:HiveCacheStore(await getTempDir()),
+              policy: CachePolicy.refreshForceCache,
+              hitCacheOnErrorExcept: []
+          ))
+        ]
+    );
     dio?.options.connectTimeout = 60 * 1000;
     dio?.options.receiveTimeout = 60 * 1000;
+
   }
 
   Future<PersistCookieJar> _getCookiePath() async {
-    Directory appDocDir = await getApplicationSupportDirectory();
-    String appDocPath = appDocDir.path;
+
     return PersistCookieJar(
-        ignoreExpires: true, storage: FileStorage("$appDocPath/.cookies/"));
+        ignoreExpires: true, storage: FileStorage("${await getAppDir()}/.cookies/"));
+  }
+  Future<String> getAppDir() async{
+    Directory appDocDir = await getApplicationSupportDirectory();
+    return appDocDir.path;
+  }
+  Future<String> getTempDir() async{
+    Directory appDocDir = await getTemporaryDirectory();
+    return appDocDir.path;
   }
 
-  // Future<String?> _getCookies() async {
-  //   var cookieJar = await _getCookiePath();
-  //   if (GetStorage('Config').read('baseUrl') != null) {
-  //     var cookies = await cookieJar.loadForRequest(Uri.parse(GetStorage('Config').read('baseUrl')));
-  //
-  //     var cookie = CookieManager.getCookies(cookies);
-  //
-  //     return cookie;
-  //   } else {
-  //     return null;
-  //   }
-  // }
+
+// Future<String?> _getCookies() async {
+//   var cookieJar = await _getCookiePath();
+//   if (GetStorage('Config').read('baseUrl') != null) {
+//     var cookies = await cookieJar.loadForRequest(Uri.parse(GetStorage('Config').read('baseUrl')));
+//
+//     var cookie = CookieManager.getCookies(cookies);
+//
+//     return cookie;
+//   } else {
+//     return null;
+//   }
+// }
 
 }

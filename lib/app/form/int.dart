@@ -35,6 +35,7 @@ class Int extends StatelessWidget with  ControlInput {
 
     return FormBuilderTextField(
       key: key,
+      readOnly: doctypeField.readOnly == 1,
       onChanged: onChanged,
       initialValue: doc != null
           ? doc![doctypeField.fieldname] != null

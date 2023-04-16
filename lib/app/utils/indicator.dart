@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../config/palette.dart';
 
 class Indicator {
-  static Widget buildStatusButton(String doctype, String status) {
-
-    if (["Pending", "Review", "Medium", "Not Approved"]
+  static Widget buildStatusButton(List statuses) {
+    String status = _getStatus(statuses);
+    if (["Pending", "Review", "Medium", "Not Approved","Partly Paid","Unpaid","Not Saved"]
         .contains(status)) {
       return indicateWarning(status);
-    } else if (["Open", "Urgent", "High", "Failed", "Rejected", "Error"]
+    } else if (["Open", "Urgent", "High", "Failed", "Rejected", "Error","Overdue","Cancelled","Draft"]
         .contains(status)) {
       return indicateDanger(status);
     } else if ([
@@ -105,4 +105,11 @@ class Indicator {
       },
     );
   }
+}
+
+String _getStatus(List statuses) {
+  if(statuses[1] != null){
+    return statuses[1];
+  }
+  return statuses[0]==1 ? "Disabled":"Enabled";
 }
