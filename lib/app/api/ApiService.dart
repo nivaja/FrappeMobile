@@ -10,12 +10,13 @@ import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../config/config.dart';
 import 'api_interceptor.dart';
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
   static Dio? dio;
-
+  static String? cookies;
   factory ApiService() {
     return _instance;
   }
@@ -32,7 +33,7 @@ class ApiService {
         BaseOptions(baseUrl: '$baseUrl/api')
     )..interceptors.addAll(
         [
-          CookieManager(await _getCookiePath()),
+          CookieManager(await getCookiePath()),
           DioInterceptor(),
           DioCacheInterceptor(options: CacheOptions(
               maxStale: const Duration(days: 7),
@@ -47,12 +48,11 @@ class ApiService {
 
   }
 
-  Future<PersistCookieJar> _getCookiePath() async {
-
+  static Future<PersistCookieJar> getCookiePath() async {
     return PersistCookieJar(
         ignoreExpires: true, storage: FileStorage("${await getAppDir()}/.cookies/"));
   }
-  Future<String> getAppDir() async{
+  static Future<String> getAppDir() async{
     Directory appDocDir = await getApplicationSupportDirectory();
     return appDocDir.path;
   }
@@ -60,19 +60,21 @@ class ApiService {
     Directory appDocDir = await getTemporaryDirectory();
     return appDocDir.path;
   }
+  static Future initCookies() async {
+    cookies = await getCookies();
+  }
 
+  static Future<String?> getCookies() async {
+    var cookieJar = await getCookiePath();
+    if (Config().uri != null) {
+      var cookies = await cookieJar.loadForRequest(Config().uri!);
 
-// Future<String?> _getCookies() async {
-//   var cookieJar = await _getCookiePath();
-//   if (GetStorage('Config').read('baseUrl') != null) {
-//     var cookies = await cookieJar.loadForRequest(Uri.parse(GetStorage('Config').read('baseUrl')));
-//
-//     var cookie = CookieManager.getCookies(cookies);
-//
-//     return cookie;
-//   } else {
-//     return null;
-//   }
-// }
+      var cookie = CookieManager.getCookies(cookies);
+
+      return cookie;
+    } else {
+      return null;
+    }
+  }
 
 }
