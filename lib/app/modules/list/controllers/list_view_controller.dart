@@ -30,11 +30,11 @@ class DocTypeListViewController extends GetxController {
 
 
     docList.addAll(list);
-    update();
+    update([docType]);
   }
   void getDocTypeDoc() async{
     docTypeDoc = await FrappeAPI.getDoctype(docType);
-    update();
+    update([docType]);
   }
 
   Future onRefresh()async{
@@ -46,7 +46,7 @@ class DocTypeListViewController extends GetxController {
     );
     docList.clear();
     docList.addAll(list);
-    update();
+    update([docType]);
   }
 
 

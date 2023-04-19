@@ -46,7 +46,11 @@ class FrappeFlatButton extends StatelessWidget {
       _buttonColor = Palette.primaryButtonColor;
       _textStyle =
           TextStyle(color: Colors.white, fontSize: fullWidth ? 18 : null);
-    } else {
+    }  else if (buttonType == ButtonType.danger) {
+      _buttonColor = Palette.dangerTxtColor;
+      _textStyle =
+          TextStyle(color: Palette.dangerBgColor, fontSize: fullWidth ? 18 : null);
+    }else {
       _buttonColor = Palette.secondaryButtonColor;
       _textStyle =
           TextStyle(color: Colors.black, fontSize: fullWidth ? 18 : null);
@@ -216,7 +220,10 @@ class FrappeIconButton extends StatelessWidget {
       _buttonColor = Palette.disabledButonColor;
     } else if (buttonType == ButtonType.primary) {
       _buttonColor = Palette.primaryButtonColor;
-    } else {
+    } else if (buttonType == ButtonType.danger) {
+      _buttonColor = Palette.dangerBgColor;
+    }
+      else {
       _buttonColor = Palette.secondaryButtonColor;
     }
 

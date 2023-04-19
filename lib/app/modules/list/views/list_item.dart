@@ -41,14 +41,13 @@ class ListItem extends StatelessWidget {
       onTap: onListTap,
       child: Card(
         margin: EdgeInsets.zero,
-        shape: Border.symmetric(
+        shape: const Border.symmetric(
           vertical: BorderSide(
             width: 0.1,
           ),
         ),
         elevation: 0,
         child: Container(
-          height: 100,
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -61,7 +60,7 @@ class ListItem extends StatelessWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     width: colWidth,
                     child: Text(
                       title ?? "",
@@ -76,7 +75,7 @@ class ListItem extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -111,7 +110,7 @@ class ListItem extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(

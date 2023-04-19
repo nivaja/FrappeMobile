@@ -4,9 +4,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 class FormHelper {
   late GlobalKey<FormBuilderState> _formKey;
 
+  GlobalKey<FormBuilderState> get formKey => _formKey;
+
   FormHelper() {
     _formKey = GlobalKey<FormBuilderState>();
   }
+
+
 
   GlobalKey<FormBuilderState> getKey() {
     return _formKey;

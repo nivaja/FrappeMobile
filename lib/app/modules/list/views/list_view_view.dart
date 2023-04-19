@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frappe_mobile_custom/app/modules/form/bindings/form_binding.dart';
 import 'package:frappe_mobile_custom/app/modules/form/views/just_form_view.dart';
+import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
 import 'package:frappe_mobile_custom/app/utils/frappe_icon.dart';
 import 'package:frappe_mobile_custom/app/widget/app_bar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -19,16 +20,17 @@ import 'list_item.dart';
 
 class DocListView extends GetView<DocTypeListViewController>{
   String docType;
+  final Map? hiddenValues;
   final _refreshController =RefreshController(initialRefresh: false);
 
-  DocListView({Key? key, required this.docType}) : super(key: key);
+  DocListView({Key? key, required this.docType,this.hiddenValues}) : super(key: key);
   final _connectivityController = Get.find<ConnectivityController>();
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        Get.to(()=>NewFormView(docType: docType,));
+        Get.to(()=>NewFormView(docType: docType,formHelper: FormHelper(),hiddenValues: hiddenValues,));
       },
         child: const Icon(Icons.add),
 
@@ -39,6 +41,8 @@ class DocListView extends GetView<DocTypeListViewController>{
             Obx(() =>_showConnectionStatus()),
             Expanded(
               child: GetBuilder<DocTypeListViewController>(
+                tag: docType,
+                id: docType,
                 init: DocTypeListViewController(docType: docType),
                 builder: (docTypeListController) =>SmartRefresher(
                   enablePullUp: true,
@@ -82,7 +86,7 @@ class DocListView extends GetView<DocTypeListViewController>{
        _refreshController.footerMode?.value=LoadStatus.canLoading;
   }
   _onLoading()async{
-    await controller.getDocList(refreshController: _refreshController);
+    await Get.find<DocTypeListViewController>(tag: docType).getDocList(refreshController: _refreshController);
   }
 
   Widget _generateItem({

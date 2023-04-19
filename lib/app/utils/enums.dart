@@ -15,6 +15,7 @@ enum ViewType {
 enum ButtonType {
   primary,
   secondary,
+  danger
 }
 
 enum ConnectivityStatus {

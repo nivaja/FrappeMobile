@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -155,6 +157,8 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
               var response = await FrappeAPI.searchLink(
                 doctype: widget.doc[widget.doctypeField.options],
                 txt: lowercaseQuery,
+                refDoctype:widget.doctypeField.parent,
+                filters:jsonDecode(widget.doctypeField.description??"{}")
               );
 
               return response["results"];

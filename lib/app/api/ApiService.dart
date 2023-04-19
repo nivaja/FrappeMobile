@@ -40,7 +40,8 @@ class ApiService {
               store:HiveCacheStore(await getTempDir()),
               policy: CachePolicy.refreshForceCache,
               hitCacheOnErrorExcept: []
-          ))
+            )
+          )
         ]
     );
     dio?.options.connectTimeout = 60 * 1000;

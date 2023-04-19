@@ -106,7 +106,7 @@ class FormView extends GetView<FormController> {
 
   FrappeFlatButton _actionButton(FormController formController,BuildContext context,String title,{required Function btnOkOnPress}){
     return FrappeFlatButton(
-      buttonType: ButtonType.primary,
+      buttonType: title=='cancel'?ButtonType.danger:ButtonType.primary,
       title: title,
       onPressed: () =>
       AwesomeDialog(

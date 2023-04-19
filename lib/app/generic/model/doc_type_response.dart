@@ -244,6 +244,7 @@ class DoctypeField {
   late String? doctype;
   late String? name;
   late String? owner;
+  late String? description;
   late String? creation;
   late String? modified;
   late String? modifiedBy;
@@ -300,6 +301,7 @@ class DoctypeField {
     this.doctype,
     this.name,
     this.owner,
+    this.description,
     this.creation,
     this.modified,
     this.modifiedBy,
@@ -356,6 +358,7 @@ class DoctypeField {
   DoctypeField.fromJson(Map<dynamic, dynamic> json) {
     doctype = json['doctype'];
     name = json['name'];
+    description=json['description'];
     owner = json['owner'];
     creation = json['creation'];
     modified = json['modified'];

@@ -67,6 +67,7 @@ class FrappeAPI{
     String? refDoctype,
     String? txt,
     int? pageLength,
+    Map? filters,
   }) async {
     var queryParams = {
       'txt': txt,
@@ -77,6 +78,10 @@ class FrappeAPI{
 
     if (pageLength != null) {
       queryParams['page_length'] = pageLength;
+    }
+
+    if (filters != null && filters.isNotEmpty) {
+      queryParams['filters'] = jsonEncode(filters);
     }
 
     try {
@@ -188,7 +193,7 @@ class FrappeAPI{
             statusMessage: error.message,
           );
         } else {
-          throw ErrorResponse(statusMessage: error.message);
+          rethrow;
         }
       } else {
         rethrow;
@@ -328,6 +333,8 @@ class FrappeAPI{
     };
 
     try {
+      print(jsonEncode(data).runtimeType);
+      print(jsonEncode(data));
       final response = await ApiService.dio!.post(
         '/method/frappe.desk.form.save.savedocs',
         data: "doc=${Uri.encodeComponent(json.encode(data))}&action=Save",

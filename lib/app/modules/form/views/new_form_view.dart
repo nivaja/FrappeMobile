@@ -19,13 +19,15 @@ import 'form_view.dart';
 class NewFormView extends StatelessWidget {
   final String docType;
   final bool getData;
-  NewFormView({ Key? key, required this.docType,this.getData=false}) : super(key:key);
-  final _formHelper = FormHelper();
+  final FormHelper formHelper;
+  final Map? hiddenValues;
+    NewFormView({ Key? key, required this.docType,this.getData=false,required this.formHelper,this.hiddenValues}) : super(key:key);
+
 
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => NewFormController(docType: docType),tag: docType);
+    Get.lazyPut(() => NewFormController(docType: docType,formHelper: formHelper),tag: docType);
     return Scaffold(
       appBar: appBar(title:'New $docType' ,
         status: Indicator.buildStatusButton([0,'Not Saved']),
@@ -39,8 +41,8 @@ class NewFormView extends StatelessWidget {
               buttonType: ButtonType.primary,
               title: 'save',
               onPressed: () {
-                Get.to(NewFormView(docType: 'Customer Group'));
-                if(_formHelper.saveAndValidate()){
+                print(formHelper.getFormValue());
+                if(formHelper.saveAndValidate()){
                   AwesomeDialog(
                     context: context,
                     dialogType: DialogType.warning,
@@ -49,7 +51,7 @@ class NewFormView extends StatelessWidget {
                     btnCancelOnPress: () {},
                     btnOkOnPress: ()async{
 
-                      dio.Response res = await Get.find<NewFormController>(tag: docType).saveDoc(_formHelper.getFormValue());
+                      dio.Response res = await Get.find<NewFormController>(tag: docType).saveDoc(formHelper.getFormValue());
                       !getData?
                       Get.off(
                               ()=>FormView(name: res.data['docs'][0]['name'], docType: docType),
@@ -69,9 +71,10 @@ class NewFormView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
           child: FormBuilder(
-            key: _formHelper.getKey(),
+            key: formHelper.getKey(),
             onChanged: (){
-              _formHelper.save();
+
+              formHelper.save();
             },
             child: Obx(
                   ()=>
@@ -80,11 +83,24 @@ class NewFormView extends StatelessWidget {
                         docType:docType,
                         fields: Get.find<NewFormController>(tag: docType).fields.value,
                         doc: Get.find<NewFormController>(tag: docType).newDoc.value,
-                      )
+                      )..addAll([
+                        Opacity(opacity: 0,child: Column(children: hiddenItems(),),)
+                      ])
                   ),
             ),
           )
       ),
     );
+  }
+
+  hiddenItems(){
+    List<FormBuilderTextField> hiddenItems=[];
+    if (hiddenValues != null){
+    for (var entry in hiddenValues!.entries){
+
+        hiddenItems.add(FormBuilderTextField(name: entry.key,initialValue: entry.value,));
+      }
+    }
+    return hiddenItems;
   }
 }

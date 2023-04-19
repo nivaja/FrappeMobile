@@ -33,7 +33,7 @@ class FormController extends GetxController {
 
   Future loadDoc() async{
     docTypeDoc = await FrappeAPI.getDoctype(docType);
-    fields = docTypeDoc!.docs[0].fields.where((field) => field.allowInQuickEntry ==1 ).toList();
+    fields = docTypeDoc!.docs[0].fields;
     GetDocResponse dr = await FrappeAPI.getDoc(docType,name);
     doc= dr.docs[0] as Map<String,dynamic>;
     isLoading=false;

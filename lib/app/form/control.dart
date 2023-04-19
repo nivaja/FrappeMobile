@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:frappe_mobile_custom/app/form/geolocation.dart';
 import 'package:frappe_mobile_custom/app/form/table.dart';
 import 'package:frappe_mobile_custom/app/form/text.dart';
 
@@ -44,6 +46,14 @@ Widget makeControl({
     case "Dynamic Link":
       {
         control = DynamicLink(
+          doctypeField: field,
+          doc: doc,
+        );
+      }
+      break;
+    case "Geolocation":
+      {
+        control = Geolocation(
           doctypeField: field,
           doc: doc,
         );
@@ -294,6 +304,7 @@ List<Widget> generateLayout({
   // required OnControlChanged onControlChanged,
   required Map doc,
   required String docType,
+  List<Widget>? customControls
 }) {
   List<Widget> collapsibles = [];
   List<Widget> widgets = [];
@@ -308,7 +319,7 @@ List<Widget> generateLayout({
   int cIdx = 0;
   int sIdx = 0;
 
-  fields.forEach(
+  fields.where((_) => _.allowInQuickEntry==1).forEach(
         (field) {
       var fieldVisibility = field.pVisible == 1;
 
@@ -555,6 +566,9 @@ List<Widget> generateLayout({
     );
     cIdx += 1;
     collapsibles.clear();
+  }
+  if(customControls != null){
+    widgets.addAll(customControls);
   }
 
   return widgets;
