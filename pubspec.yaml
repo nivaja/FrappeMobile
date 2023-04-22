@@ -29,8 +29,9 @@ dependencies:
   awesome_dialog: ^3.0.2
   persistent_bottom_nav_bar: ^5.0.2
   lazy_load_indexed_stack: ^0.1.4
-  open_street_map_search_and_pick: ^0.0.16
   geolocator: ^9.0.2
+  geocoding: ^2.1.0
+  url_launcher: ^6.1.10
   flutter: 
     sdk: flutter
   flutter_map: ^3.1.0

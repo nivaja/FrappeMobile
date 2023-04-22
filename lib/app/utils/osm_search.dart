@@ -5,10 +5,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:frappe_mobile_custom/app/utils/enums.dart';
+import 'package:frappe_mobile_custom/app/widget/frappe_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
-import 'package:open_street_map_search_and_pick/widgets/wide_button.dart';
 
 class OpenStreetMapSearchAndPick extends StatefulWidget {
   final LatLong center;
@@ -322,15 +323,15 @@ class _OpenStreetMapSearchAndPickState
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: WideButton(
-                  widget.buttonText,
+                child: FrappeFlatButton(
+                  title:widget.buttonText,
                   onPressed: () async {
                     pickData().then((value) {
                       widget.onPicked(value);
                     });
                   },
-                  backgroundColor: widget.buttonColor,
-                  foregroundColor: widget.buttonTextColor,
+                buttonType: ButtonType.primary,
+                  fullWidth: true,
                 ),
               ),
             ),

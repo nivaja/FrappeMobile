@@ -43,20 +43,20 @@ class FormBuilderMapField extends FormBuilderField<String> {
                     btnOkOnPress: (){
                       print(geoMap.value);
                       geoMap.didChange(
-                        json.encode({
-                          "type": "FeatureCollection",
-                          "features": [
-                            {
-                              "type": "Feature",
-                              "properties": {},
-                              "geometry": {
-                                "type": "Point",
-                                "coordinates": [pickedData.latLong.latitude, pickedData.latLong.longitude]
+                          json.encode({
+                            "type": "FeatureCollection",
+                            "features": [
+                              {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                  "type": "Point",
+                                  "coordinates": [pickedData.latLong.latitude, pickedData.latLong.longitude]
+                                }
                               }
-                            }
-                          ]
+                            ]
 
-                        })
+                          })
                       );
 
                     }
