@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:frappe_mobile_custom/app/form/geolocation.dart';
+import 'package:frappe_mobile_custom/app/form/image.dart';
 import 'package:frappe_mobile_custom/app/form/table.dart';
 import 'package:frappe_mobile_custom/app/form/text.dart';
 
@@ -10,6 +11,7 @@ import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
 import '../widget/expandable_tile.dart';
 import '../widget/section.dart';
+import 'check.dart';
 import 'curreny.dart';
 import 'data.dart';
 import 'date.dart';
@@ -24,7 +26,6 @@ import 'time.dart';
 
 
 Widget makeControl({
-  required String docType,
   required DoctypeField field,
   required Map doc,
   // OnControlChanged? onControlChanged,
@@ -36,7 +37,6 @@ Widget makeControl({
     case "Link":
       {
         control = LinkField(
-          docType:docType,
           doctypeField: field,
           doc: doc,
         );
@@ -134,6 +134,15 @@ Widget makeControl({
         );
       }
       break;
+
+    case "Attach Image":
+      {
+          control = ImageField(
+          doctypeField: field,
+          doc: doc,
+        );
+      }
+      break;
     //
     // case "Read Only":
     //   {
@@ -144,15 +153,14 @@ Widget makeControl({
     //   }
     //   break;
 
-    // case "Check":
-    //   {
-    //     control = Check(
-    //       doctypeField: field,
-    //       doc: doc,
-    //       onControlChanged: onControlChanged,
-    //     );
-    //   }
-    //   break;
+    case "Check":
+      {
+        control = Check(
+          doctypeField: field,
+          doc: doc,
+        );
+      }
+      break;
     //
     // case "Text Editor":
     //   {
@@ -303,7 +311,6 @@ List<Widget> generateLayout({
   required List<DoctypeField> fields,
   // required OnControlChanged onControlChanged,
   required Map doc,
-  required String docType,
   List<Widget>? customControls
 }) {
   List<Widget> collapsibles = [];
@@ -333,7 +340,6 @@ List<Widget> generateLayout({
             top: 10,
           ),
           child: makeControl(
-            docType: docType,
             field: field,
             doc: doc,
             // onControlChanged: onControlChanged,
@@ -351,7 +357,6 @@ List<Widget> generateLayout({
             right: 16,
           ),
           child: makeControl(
-            docType: docType,
             field: field,
             doc: doc,
             // onControlChanged: onControlChanged,

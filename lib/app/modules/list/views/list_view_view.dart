@@ -7,6 +7,7 @@ import 'package:frappe_mobile_custom/app/modules/form/bindings/form_binding.dart
 import 'package:frappe_mobile_custom/app/modules/form/views/just_form_view.dart';
 import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
 import 'package:frappe_mobile_custom/app/utils/frappe_icon.dart';
+import 'package:frappe_mobile_custom/app/utils/search_delegate.dart';
 import 'package:frappe_mobile_custom/app/widget/app_bar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -29,13 +30,26 @@ class DocListView extends GetView<DocTypeListViewController>{
   Widget build(BuildContext context) {
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        Get.to(()=>NewFormView(docType: docType,formHelper: FormHelper(),hiddenValues: hiddenValues,));
-      },
-        child: const Icon(Icons.add),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          Get.to(()=>NewFormView(docType: docType,formHelper: FormHelper(),hiddenValues: hiddenValues,));
+        },
+          child: const Icon(Icons.add),
 
-      ),
-        appBar: appBar(title: docType),
+        ),
+        appBar: appBar(
+            title: docType,
+            actions:
+            [
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: ()async{
+                  String result = await showSearch(context: context, delegate: FrappeSearchDelegate(docType: docType));
+                  Get.to(()=>FormView(name: result, docType: docType),binding: FormBinding(docType: docType, name: result));
+                }
+                ,
+              )
+            ]
+        ),
         body: Column(
           children: [
             Obx(() =>_showConnectionStatus()),
@@ -56,7 +70,6 @@ class DocListView extends GetView<DocTypeListViewController>{
                       itemBuilder: ((buildContext, index) {
                         late var e = docTypeListController.docList[index] as Map;
                         return _generateItem(
-
                           data: e,
                           onListTap: (){
                             Get.to(
@@ -64,7 +77,7 @@ class DocListView extends GetView<DocTypeListViewController>{
                                   name:e['name'],
                                   docType:docTypeListController.docType,
                                 ),
-                              binding: FormBinding(docType: docTypeListController.docType, name: e['name'])
+                                binding: FormBinding(docType: docTypeListController.docType, name: e['name'])
 
                             );
                           },
@@ -73,7 +86,7 @@ class DocListView extends GetView<DocTypeListViewController>{
                       })),
                 ),
 
-    ),
+              ),
             ),
           ],
         )
@@ -81,9 +94,9 @@ class DocListView extends GetView<DocTypeListViewController>{
   }
 
   _onRefresh(DocTypeListViewController controller)async{
-       await controller.onRefresh();
-       _refreshController.refreshCompleted();
-       _refreshController.footerMode?.value=LoadStatus.canLoading;
+    await controller.onRefresh();
+    _refreshController.refreshCompleted();
+    _refreshController.footerMode?.value=LoadStatus.canLoading;
   }
   _onLoading()async{
     await Get.find<DocTypeListViewController>(tag: docType).getDocList(refreshController: _refreshController);

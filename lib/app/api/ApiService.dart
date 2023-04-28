@@ -25,8 +25,6 @@ class ApiService {
     dio = Dio();
   }
 
-
-
   Future init(String baseUrl) async {
     // set up Dio instance with base URL, interceptors, etc.
     dio=Dio(
@@ -69,13 +67,10 @@ class ApiService {
     var cookieJar = await getCookiePath();
     if (Config().uri != null) {
       var cookies = await cookieJar.loadForRequest(Config().uri!);
-
       var cookie = CookieManager.getCookies(cookies);
-
       return cookie;
     } else {
       return null;
     }
   }
-
 }

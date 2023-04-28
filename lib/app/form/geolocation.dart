@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:frappe_mobile_custom/app/utils/enums.dart';
 import 'package:frappe_mobile_custom/app/widget/frappe_button.dart';
 import 'package:geocoding/geocoding.dart';
@@ -11,6 +12,8 @@ import 'package:frappe_mobile_custom/app/widget/map_form_field.dart';
 
 import '../generic/model/doc_type_response.dart';
 import 'package:latlong2/latlong.dart';
+
+import 'control.dart';
 
 
 class Geolocation extends StatefulWidget {
@@ -22,17 +25,26 @@ class Geolocation extends StatefulWidget {
   State<Geolocation> createState() => _GeolocationState();
 }
 
-class _GeolocationState extends State<Geolocation> {
+class _GeolocationState extends State<Geolocation> with ControlInput {
   @override
   Widget build(BuildContext context) {
-    return
-      Container(
+    List<String? Function(dynamic)> validators = [];
+
+    var f = setMandatory(widget.doctypeField);
+
+    if (f != null) {
+      validators.add(
+        f(context,errorText: 'Please Add Geolocation'),
+      );
+    }
+
+    return  SizedBox(
           height: 500,
           width: 500,
           child: widget.doc?[widget.doctypeField.fieldname] == null ?FormBuilderMapField(
             name: widget.doctypeField.fieldname,
-            initialValue: '{}',
             context: context,
+            validator:  FormBuilderValidators.compose(validators),
           ) :  _loadMap()
       )
 
@@ -55,7 +67,7 @@ class _GeolocationState extends State<Geolocation> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FutureBuilder<String>(
-            future: _getAddress(geoCoords[0], geoCoords[1]),
+            future: _getAddress(geoCoords[1], geoCoords[0]),
             builder: (BuildContext context,AsyncSnapshot<String> snapshot) {
               if(snapshot.hasData){
                 return Text(snapshot.data!);
@@ -69,7 +81,7 @@ class _GeolocationState extends State<Geolocation> {
 
         FrappeFlatButton(onPressed: ()async {
             await launchUrl(
-              Uri.parse('https://www.google.com/maps/dir//${geoCoords[0]},${geoCoords[1]}'),
+              Uri.parse('https://www.google.com/maps/dir//${geoCoords[1]},${geoCoords[0]}'),
               mode: LaunchMode.externalApplication,
 
             );
@@ -77,7 +89,7 @@ class _GeolocationState extends State<Geolocation> {
         Expanded(
           child: FlutterMap(
             options: MapOptions(
-              center: LatLng(geoCoords[0], geoCoords[1]),
+              center: LatLng(geoCoords[1],geoCoords[0],),
               zoom: 15,
             ),
                   children: [
@@ -90,7 +102,7 @@ class _GeolocationState extends State<Geolocation> {
                 markers: [
                   Marker(
                       builder: (context)=>const Icon(Icons.location_on,color: Colors.blue,size: 50,),
-                      point: LatLng(geoCoords[0], geoCoords[1]),
+                      point: LatLng( geoCoords[1],geoCoords[0],),
                       height: 100,
                       width: 100
 

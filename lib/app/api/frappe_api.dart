@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:frappe_mobile_custom/app/api/ApiService.dart';
-import 'package:get/get.dart';
+// import 'package:get/get.dart';
 
 import '../generic/common.dart';
 import '../generic/model/doc_type_response.dart';
 import '../generic/model/get_doc_response.dart';
+import '../generic/model/upload_file_response.dart';
 import '../utils/utils.dart';
 
 class FrappeAPI{
@@ -20,7 +21,7 @@ class FrappeAPI{
     };
 
     try {
-        final response = await ApiService.dio!.get('/method/frappe.desk.form.load.getdoctype',
+      final response = await ApiService.dio!.get('/method/frappe.desk.form.load.getdoctype',
         queryParameters: queryParams,
       );
 
@@ -96,7 +97,7 @@ class FrappeAPI{
 
       );
       if (response.statusCode == 200 || response.statusCode == 304) {
-         return response.data;
+        return response.data;
       } else if (response.statusCode == HttpStatus.forbidden) {
         throw ErrorResponse(
           statusCode: response.statusCode,
@@ -132,7 +133,7 @@ class FrappeAPI{
       final response = await ApiService.dio!.get(
         '/method/frappe.desk.form.load.getdoc',
         queryParameters: queryParams,
-           );
+      );
 
       if (response.statusCode == 200 || response.statusCode == 304) {
         return GetDocResponse.fromJson(response.data);
@@ -205,7 +206,6 @@ class FrappeAPI{
   static Future<List> fetchList({
     required String doctype,
     List? fieldnames,
-    // required DoctypeDoc meta,
     String? orderBy,
     List? filters,
     int? pageLength,
@@ -215,6 +215,7 @@ class FrappeAPI{
       'doctype': doctype,
       'fields': jsonEncode(fieldnames),
       'page_length': pageLength.toString(),
+      'order_by':'modified desc'
 
     };
 
@@ -226,8 +227,8 @@ class FrappeAPI{
 
     try {
       final response = await ApiService.dio!.get(
-        '/method/frappe.desk.reportview.get',
-        queryParameters: queryParams
+          '/method/frappe.desk.reportview.get',
+          queryParameters: queryParams
       );
       if (response.statusCode == HttpStatus.ok || response.statusCode==304) {
         var l = response.data["message"];
@@ -251,10 +252,10 @@ class FrappeAPI{
 
 
         return newL;
-        }
+      }
 
 
-     else if (response.statusCode == HttpStatus.forbidden) {
+      else if (response.statusCode == HttpStatus.forbidden) {
         throw ErrorResponse(
           statusCode: response.statusCode,
           statusMessage: response.statusMessage,
@@ -332,9 +333,12 @@ class FrappeAPI{
       ...formValue,
     };
 
+
     try {
-      print(jsonEncode(data).runtimeType);
-      print(jsonEncode(data));
+      EasyLoading.show(
+        maskType: EasyLoadingMaskType.black,
+        indicator: const CircularProgressIndicator(backgroundColor: Colors.white),
+        status: 'Please Wait...',);
       final response = await ApiService.dio!.post(
         '/method/frappe.desk.form.save.savedocs',
         data: "doc=${Uri.encodeComponent(json.encode(data))}&action=Save",
@@ -373,11 +377,10 @@ class FrappeAPI{
       } else {
         throw ErrorResponse();
       }
+    }finally{
+      EasyLoading.dismiss();
     }
-
-
   }
-
 
   static Future postComment(
       String refDocType, String refName, String content, String email) async {
@@ -416,4 +419,32 @@ class FrappeAPI{
     }
   }
 
+  static Future<UploadedFileResponse> uploadImage({
+    required String doctype,
+    String? name,
+    String? filename,
+    required String filePath,
+  }) async {
+
+    String fileName = filename ?? filePath.split('/').last;
+    final file = await MultipartFile.fromFile(filePath,filename: fileName);
+    final formData = FormData.fromMap({
+      "file": file,
+      "is_private": 0
+    });
+
+    var response = await ApiService.dio!.post(
+      "/method/upload_file",
+      data: formData,
+    );
+    if (response.statusCode == 200) {
+      return UploadedFileResponse.fromJson(response.data);
+    } else {
+      throw Exception('Something went wrong');
+    }
+  }
+
+  static logout() async{
+    await ApiService.dio!.get('/method/logout');
+  }
 }

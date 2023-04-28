@@ -75,7 +75,6 @@ class FormView extends GetView<FormController> {
               },
               child: Column(
                   children: generateLayout(
-                    docType: formController.doc['doctype'],
                     fields: formController.fields,
                     doc: formController.doc,
                   )

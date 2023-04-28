@@ -1,14 +1,12 @@
 import 'package:dio/dio.dart' as dio;
-import 'package:frappe_mobile_custom/app/modules/form/bindings/form_binding.dart';
-import 'package:frappe_mobile_custom/app/modules/form/views/form_view.dart';
 import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
 import 'package:get/get.dart';
 
 import '../../../api/frappe_api.dart';
 import '../../../generic/model/doc_type_response.dart';
+import '../../../generic/model/upload_file_response.dart';
 
 class NewFormController extends GetxController {
-  //TODO: Implement NewFormController
   final String docType;
   FormHelper formHelper;
   RxList<DoctypeField> fields = <DoctypeField>[].obs;
@@ -21,19 +19,7 @@ class NewFormController extends GetxController {
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   Future getFields() async{
-
     var res = await FrappeAPI.getDoctype(docType);
     fields.value = res.docs[0].fields;
     fields.forEach((field) {
@@ -48,9 +34,31 @@ class NewFormController extends GetxController {
     update([docType]);
   }
 
-  Future<dio.Response> saveDoc(Map data) async {
-    dio.Response res = await FrappeAPI.saveDocs(docType,data) ;
-    return res;
+  Future<dio.Response> saveDoc() async {
+    late dio.Response res;
+    List<DoctypeField> list = fields.value.where((_) => (['Attach Image']
+        .contains(_.fieldtype) && _.allowInQuickEntry == 1)).toList();
+    for(var field in list ){
+      var formState =formHelper.getKey().currentState!.fields[field.fieldname]!;
+      if(formState.value != null) {
+        //Upload Image First before saving doc and get image url
+        UploadedFileResponse response = await FrappeAPI
+            .uploadImage(
+            doctype: docType, filePath: formState.value);
+        formHelper
+            .getKey()
+            .currentState!
+            .fields[field.fieldname]!.didChange(response.uploadedFile.fileUrl);
+        res = await FrappeAPI.saveDocs(docType,formHelper.getFormValue());
 
+      }
+      else {
+        // Remove null image URL from form state
+        Map<String, dynamic> formValue = Map.from(formHelper.getFormValue());
+        formValue[field.fieldname] = null;
+         res = await FrappeAPI.saveDocs(docType,formValue);
+      }
+    }
+    return res;
   }
 }

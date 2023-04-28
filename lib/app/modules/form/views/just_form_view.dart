@@ -29,7 +29,6 @@ class JustFormView extends GetView {
         child: SingleChildScrollView(
           child: Column(
             children: generateLayout(
-              docType: doc['doctype'],
               fields: fields,
               doc: doc,
             ),

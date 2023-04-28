@@ -20,7 +20,7 @@
     <!-- Include only if your app benefits from precise location access. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    <application
-        android:label="frappe_mobile_custom"
+        android:label="Aaku POS"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

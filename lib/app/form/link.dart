@@ -15,7 +15,6 @@ import 'control.dart';
 class LinkField extends StatefulWidget {
   final DoctypeField doctypeField;
   final Map? doc;
-  final String docType;
 
   final GlobalKey<FormBuilderState>? key;
   final bool showInputBorder;
@@ -30,7 +29,6 @@ class LinkField extends StatefulWidget {
   LinkField({
     this.key,
     required this.doctypeField,
-    required this.docType,
     this.doc,
     this.prefixIcon,
     this.onSuggestionSelected,
@@ -59,13 +57,6 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
       );
     }
 
-    // if (widget.doctypeField.readOnly == 1 ||
-    //     (widget.doc != null && widget.doctypeField.setOnlyOnce == 1)) {
-    //   enabled = false;
-    // } else {
-    //   enabled = true;
-    // }
-
     if (widget.doc != null && widget.doctypeField.setOnlyOnce == 1) {
       enabled = false;
     } else {
@@ -81,7 +72,7 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
         initialValue: widget.doc != null
             ? widget.doc![widget.doctypeField.fieldname]
             : null,
-        direction: AxisDirection.up,
+        direction: AxisDirection.down,
         onSuggestionSelected: (item) {
           var val = item is String
               ? item
