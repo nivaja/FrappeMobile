@@ -1,12 +1,7 @@
-import 'dart:convert';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frappe_mobile_custom/app/modules/form/bindings/form_binding.dart';
-import 'package:frappe_mobile_custom/app/modules/form/views/just_form_view.dart';
 import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
-import 'package:frappe_mobile_custom/app/utils/frappe_icon.dart';
 import 'package:frappe_mobile_custom/app/utils/search_delegate.dart';
 import 'package:frappe_mobile_custom/app/widget/app_bar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
