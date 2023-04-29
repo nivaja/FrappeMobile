@@ -61,7 +61,7 @@ class DioInterceptor extends InterceptorsWrapper{
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print("Response --> ${response.data.toString()}");
+    print("Response (${response.statusCode}) --> ${response.data.toString()}");
     super.onResponse(response, handler);
   }
 }

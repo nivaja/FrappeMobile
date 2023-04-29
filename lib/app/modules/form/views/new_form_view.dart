@@ -2,6 +2,7 @@
 import 'dart:ffi';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:frappe_mobile_custom/app/widget/app_bar.dart';
@@ -68,6 +69,12 @@ class NewFormView extends StatelessWidget {
             )
             ,
           ),
+          PopupMenuButton(itemBuilder: (BuildContext context){
+            return ['Reload'].map((e) => PopupMenuItem(child:Text(e),
+              onTap: () async=>
+              await Get.find<NewFormController>(tag: docType).getFields(cachePolicy: CachePolicy.refresh), )
+            ).toList();
+          })
         ],
       ),
       body: SingleChildScrollView(
@@ -85,25 +92,25 @@ class NewFormView extends StatelessWidget {
                         doc: Get.find<NewFormController>(tag: docType).newDoc.value,
                       )..addAll([
                         Opacity(opacity: 0,child: Column(children: hiddenItems()                          ,),),
-                      FutureBuilder(
-                      future: getCurrentLocation(),
-                    builder: (BuildContext context, AsyncSnapshot<Position?> snapshot) {
-                      if(snapshot.hasData){
-                        return Opacity(
-                          opacity: 0,
-                          child: Column(
-                            children: [
+                        FutureBuilder(
+                          future: getCurrentLocation(),
+                          builder: (BuildContext context, AsyncSnapshot<Position?> snapshot) {
+                            if(snapshot.hasData){
+                              return Opacity(
+                                opacity: 0,
+                                child: Column(
+                                  children: [
 
-                              FormBuilderTextField(name: 'latitude',initialValue: snapshot.data?.latitude.toString(),),
-                              FormBuilderTextField(name: 'longitude',initialValue: snapshot.data?.longitude.toString(),),
-                            ],
-                          ),
-                        );
-                      }
-                      return const SizedBox();
-                    },
+                                    FormBuilderTextField(name: 'latitude',initialValue: snapshot.data?.latitude.toString(),),
+                                    FormBuilderTextField(name: 'longitude',initialValue: snapshot.data?.longitude.toString(),),
+                                  ],
+                                ),
+                              );
+                            }
+                            return const SizedBox();
+                          },
 
-                  ),
+                        ),
 
                       ])
                   ),
