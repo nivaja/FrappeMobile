@@ -24,7 +24,6 @@ class ApiService {
   ApiService._internal() {
     dio = Dio();
   }
-
   Future init(String baseUrl) async {
     // set up Dio instance with base URL, interceptors, etc.
     dio=Dio(
@@ -33,12 +32,7 @@ class ApiService {
         [
           CookieManager(await getCookiePath()),
           DioInterceptor(),
-          DioCacheInterceptor(options: CacheOptions(
-              maxStale: const Duration(days: 7),
-              store:HiveCacheStore(await getTempDir()),
-              policy: CachePolicy.refreshForceCache,
-              hitCacheOnErrorExcept: []
-            )
+          DioCacheInterceptor(options: await getCacheOptions()
           )
         ]
     );
@@ -55,7 +49,7 @@ class ApiService {
     Directory appDocDir = await getApplicationSupportDirectory();
     return appDocDir.path;
   }
-  Future<String> getTempDir() async{
+  static Future<String> getTempDir() async{
     Directory appDocDir = await getTemporaryDirectory();
     return appDocDir.path;
   }
@@ -72,5 +66,15 @@ class ApiService {
     } else {
       return null;
     }
+  }
+
+  static Future<CacheOptions> getCacheOptions() async{
+    return CacheOptions(
+      maxStale: const Duration(days: 7),
+      store:HiveCacheStore(await getTempDir()),
+      policy: CachePolicy.refreshForceCache,
+      hitCacheOnErrorExcept: [],
+
+    );
   }
 }

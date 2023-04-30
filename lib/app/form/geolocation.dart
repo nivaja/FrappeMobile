@@ -8,8 +8,6 @@ import 'package:frappe_mobile_custom/app/widget/frappe_button.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:frappe_mobile_custom/app/widget/map_form_field.dart';
-
-
 import '../generic/model/doc_type_response.dart';
 import 'package:latlong2/latlong.dart';
 

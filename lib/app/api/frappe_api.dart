@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:frappe_mobile_custom/app/api/ApiService.dart';
-// import 'package:get/get.dart';
 
 import '../generic/common.dart';
 import '../generic/model/doc_type_response.dart';
@@ -15,14 +15,15 @@ import '../generic/model/upload_file_response.dart';
 import '../utils/utils.dart';
 
 class FrappeAPI{
-  static Future<DoctypeResponse> getDoctype(String doctype) async {
+  static Future<DoctypeResponse> getDoctype(String doctype,{CachePolicy cachePolicy=CachePolicy.forceCache}) async {
     var queryParams = {
       'doctype': doctype,
     };
-
     try {
+      CacheOptions cacheOptions =await ApiService.getCacheOptions();
       final response = await ApiService.dio!.get('/method/frappe.desk.form.load.getdoctype',
-        queryParameters: queryParams,
+          queryParameters: queryParams,
+          options: cacheOptions.copyWith(policy: cachePolicy).toOptions()
       );
 
       if (response.statusCode == HttpStatus.ok || response.statusCode ==304) {
@@ -90,11 +91,6 @@ class FrappeAPI{
       final response = await ApiService.dio!.get(
         '/method/frappe.desk.search.search_link',
         queryParameters: queryParams,
-        // options: Options(
-        //   contentType: Headers.formUrlEncodedContentType,
-        //
-        // ),
-
       );
       if (response.statusCode == 200 || response.statusCode == 304) {
         return response.data;
@@ -210,6 +206,7 @@ class FrappeAPI{
     List? filters,
     int? pageLength,
     int? offset,
+    CachePolicy cachePolicy = CachePolicy.forceCache
   }) async {
     var queryParams = {
       'doctype': doctype,
@@ -226,9 +223,11 @@ class FrappeAPI{
     }
 
     try {
+      CacheOptions cacheOptions =await ApiService.getCacheOptions();
       final response = await ApiService.dio!.get(
           '/method/frappe.desk.reportview.get',
-          queryParameters: queryParams
+          queryParameters: queryParams,
+          options: cacheOptions.copyWith(policy: cachePolicy).toOptions()
       );
       if (response.statusCode == HttpStatus.ok || response.statusCode==304) {
         var l = response.data["message"];
@@ -445,6 +444,6 @@ class FrappeAPI{
   }
 
   static logout() async{
-    await ApiService.dio!.get('/method/logout');
+    await ApiService.dio!.post('/method/logout');
   }
 }

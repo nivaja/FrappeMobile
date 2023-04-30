@@ -35,6 +35,7 @@ class NewFormController extends GetxController {
   }
 
   Future<dio.Response> saveDoc() async {
+    //todo: check if null can be submitted in image url
     late dio.Response res;
     List<DoctypeField> list = fields.value.where((_) => (['Attach Image']
         .contains(_.fieldtype) && _.allowInQuickEntry == 1)).toList();

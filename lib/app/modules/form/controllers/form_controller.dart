@@ -8,7 +8,6 @@ import '../../../generic/model/doc_type_response.dart';
 import '../../../generic/model/get_doc_response.dart';
 
 class FormController extends GetxController {
-  //TODO: Implement FormController
   late final String docType;
   late final String name;
   DoctypeResponse? docTypeDoc;
@@ -64,5 +63,4 @@ class FormController extends GetxController {
     update([name]);
     FrappeAlert.successAlert(title: '$docType Submitted');
   }
-
 }
