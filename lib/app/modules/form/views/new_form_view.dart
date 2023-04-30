@@ -72,7 +72,7 @@ class NewFormView extends StatelessWidget {
           PopupMenuButton(itemBuilder: (BuildContext context){
             return ['Reload'].map((e) => PopupMenuItem(child:Text(e),
               onTap: () async=>
-              await Get.find<NewFormController>(tag: docType).getFields(cachePolicy: CachePolicy.refresh), )
+              await Get.find<NewFormController>(tag: docType).getFields(cachePolicy: CachePolicy.refreshForceCache), )
             ).toList();
           })
         ],

@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:frappe_mobile_custom/app/generic/common.dart';
@@ -57,13 +58,19 @@ class FormView extends GetView<FormController> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 0,
+                    vertical: 12,
+                    horizontal: 8,
                   ),
                   child:   _showActionButton(formController, context)
                   ,
 
                 ),
+                PopupMenuButton(itemBuilder: (BuildContext context){
+                  return ['Reload'].map((e) => PopupMenuItem(child:Text(e),
+                    onTap: () async=>
+                    await formController.loadDoc(cachePolicy: CachePolicy.refreshForceCache), )
+                  ).toList();
+                })
 
               ],
             ),
