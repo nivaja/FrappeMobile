@@ -26,62 +26,64 @@ class FormView extends GetView<FormController> {
     return GetBuilder<FormController>(
       id:name,
       builder: (formController)=>
-        Scaffold(
-        appBar: AppBar(
-          foregroundColor: Colors.black,
-          elevation: 0.8,
-          backgroundColor: Colors.white,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Text(
-                  name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: FrappePalette.grey[900],
-                    fontSize: 18,
+          Scaffold(
+            appBar: AppBar(
+              foregroundColor: Colors.black,
+              elevation: 0.8,
+              backgroundColor: Colors.white,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: FrappePalette.grey[900],
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
+                  Expanded(
+                    flex: 1,
+                    child: !formController.isLoading?Indicator.buildStatusButton([0,formController.doc['status']]):const SizedBox(),
+                  ),
+                ],
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 0,
+                    horizontal: 0,
+                  ),
+                  child:   _showActionButton(formController, context)
+                  ,
+
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: !formController.isLoading?Indicator.buildStatusButton([0,formController.doc['status']]):const SizedBox(),
-              ),
-            ],
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 8,
-              ),
-              child:   _showActionButton(formController, context)
-              ,
+
+              ],
             ),
-          ],
-        ),
-        body: formController.isLoading?const Center(child: CircularProgressIndicator(),):SingleChildScrollView(
-            child: FormBuilder(
-              key: _formHelper.getKey(),
-              enabled: ![1,2].contains(formController.doc['docstatus']),
-              onChanged: (){
-                _formHelper.save();
-                formController.handleChange();
-              },
-              child: Column(
-                  children: generateLayout(
-                    fields: formController.fields,
-                    doc: formController.doc,
-                  )
-              ),
-            )
-        ),
-      ),
+            body: formController.isLoading?const Center(child: CircularProgressIndicator(),):SingleChildScrollView(
+                child: FormBuilder(
+                  key: _formHelper.getKey(),
+                  enabled: ![1,2].contains(formController.doc['docstatus']),
+                  onChanged: (){
+                    _formHelper.save();
+                    formController.handleChange();
+                  },
+                  child: Column(
+                      children: generateLayout(
+                        fields: formController.fields,
+                        doc: formController.doc,
+                      )
+                  ),
+                )
+            ),
+          ),
     );
 
   }
@@ -108,28 +110,28 @@ class FormView extends GetView<FormController> {
       buttonType: title=='cancel'?ButtonType.danger:ButtonType.primary,
       title: title,
       onPressed: () =>
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.warning,
-        animType: AnimType.rightSlide,
-        title: 'Are you sure you want to $title?',
-        btnCancelOnPress: () {},
-        btnOkOnPress: (){
-          try {
-            if(_formHelper.saveAndValidate()) {
-              btnOkOnPress();
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: 'Are you sure you want to $title?',
+            btnCancelOnPress: () {},
+            btnOkOnPress: (){
+              try {
+                if(_formHelper.saveAndValidate()) {
+                  btnOkOnPress();
+                }
+              } on ErrorResponse catch(e){
+                AwesomeDialog(
+                  context: context,
+                  title: 'Error',
+                  desc: e.statusMessage,
+                  dialogType: DialogType.error,
+                ).show();
+              }catch (e){rethrow;}
             }
-          } on ErrorResponse catch(e){
-            AwesomeDialog(
-              context: context,
-              title: 'Error',
-              desc: e.statusMessage,
-              dialogType: DialogType.error,
-            ).show();
-          }catch (e){rethrow;}
-        }
-        ,
-      ).show(),
+            ,
+          ).show(),
     );
   }
 }

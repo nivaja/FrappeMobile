@@ -1,3 +1,4 @@
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -37,7 +38,8 @@ class DocTypeListViewController extends GetxController {
         doctype: docType,
         fieldnames: ['*'],
         offset: 0,
-        pageLength: 10
+        pageLength: 10,
+      cachePolicy: CachePolicy.refreshForceCache
     );
     docList.clear();
     docList.addAll(list);

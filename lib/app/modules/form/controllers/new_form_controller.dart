@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' as dio;
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
 import 'package:get/get.dart';
 
@@ -19,8 +20,8 @@ class NewFormController extends GetxController {
     super.onInit();
   }
 
-  Future getFields() async{
-    var res = await FrappeAPI.getDoctype(docType);
+  Future getFields({CachePolicy cachePolicy=CachePolicy.forceCache}) async{
+    var res = await FrappeAPI.getDoctype(docType,cachePolicy: cachePolicy);
     fields.value = res.docs[0].fields;
     fields.forEach((field) {
       var defaultVal = field.defaultValue;
