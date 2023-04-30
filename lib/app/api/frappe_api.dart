@@ -445,6 +445,6 @@ class FrappeAPI{
   }
 
   static logout() async{
-    await ApiService.dio!.get('/method/logout');
+    await ApiService.dio!.post('/method/logout');
   }
 }

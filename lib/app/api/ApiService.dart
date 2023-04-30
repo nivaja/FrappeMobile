@@ -73,7 +73,7 @@ class ApiService {
       maxStale: const Duration(days: 7),
       store:HiveCacheStore(await getTempDir()),
       policy: CachePolicy.refreshForceCache,
-      hitCacheOnErrorExcept: [401,403],
+      hitCacheOnErrorExcept: [],
 
     );
   }
