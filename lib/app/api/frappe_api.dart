@@ -445,7 +445,9 @@ class FrappeAPI{
 
   static logout() async{
     await ApiService.dio!.post('/method/logout');
+    await ApiService.getCacheOptions()..store?.clean();
   }
+
   static Future getDocinfo(String doctype, String name) async {
     var data = {
       "doctype": doctype,

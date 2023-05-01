@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:frappe_mobile_custom/app/api/ApiService.dart';
@@ -34,6 +36,7 @@ class LoginController extends GetxController {
           "/method/login", data: loginRequest);
       await Config.set('loginRequest', loginRequest);
       if (response.statusCode == HttpStatus.ok) {
+
         Config.set('isLoggedIn', true);
         Config.set('user',loginRequest['usr']);
         await ApiService.initCookies();
