@@ -25,7 +25,9 @@ class DocListView extends GetView<DocTypeListViewController>{
   Widget build(BuildContext context) {
 
     return Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () {
+        floatingActionButton: FloatingActionButton(
+          heroTag: docType,
+          onPressed: () {
           Get.to(()=>NewFormView(docType: docType,formHelper: FormHelper(),hiddenValues: hiddenValues,));
         },
           child: const Icon(Icons.add),

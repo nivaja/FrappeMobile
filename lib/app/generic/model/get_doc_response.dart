@@ -291,7 +291,6 @@ class Communication {
   late String creation;
   late String subject;
   late String deliveryStatus;
-  late String sLikedBy;
   late String referenceDoctype;
   late String referenceName;
   late int readByRecipient;
@@ -312,7 +311,6 @@ class Communication {
     required this.creation,
     required this.subject,
     required this.deliveryStatus,
-    required this.sLikedBy,
     required this.referenceDoctype,
     required this.referenceName,
     required this.readByRecipient,
@@ -334,7 +332,6 @@ class Communication {
     creation = json['creation'];
     subject = json['subject'];
     deliveryStatus = json['delivery_status'];
-    sLikedBy = json['_liked_by'];
     referenceDoctype = json['reference_doctype'];
     referenceName = json['reference_name'];
     readByRecipient = json['read_by_recipient'];
@@ -357,7 +354,6 @@ class Communication {
     data['creation'] = this.creation;
     data['subject'] = this.subject;
     data['delivery_status'] = this.deliveryStatus;
-    data['_liked_by'] = this.sLikedBy;
     data['reference_doctype'] = this.referenceDoctype;
     data['reference_name'] = this.referenceName;
     data['read_by_recipient'] = this.readByRecipient;

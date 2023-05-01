@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -446,5 +445,25 @@ class FrappeAPI{
 
   static logout() async{
     await ApiService.dio!.post('/method/logout');
+  }
+  static Future getDocinfo(String doctype, String name) async {
+    var data = {
+      "doctype": doctype,
+      "name": name,
+    };
+
+    var response = await ApiService.dio!.post(
+      '/method/frappe.desk.form.load.get_docinfo',
+      data: data,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      return Docinfo.fromJson(response.data["docinfo"]);
+    } else {
+      throw Exception('Something went wrong');
+    }
   }
 }

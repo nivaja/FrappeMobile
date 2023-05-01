@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:frappe_mobile_custom/app/generic/common.dart';
 import 'package:frappe_mobile_custom/app/utils/indicator.dart';
+import 'package:frappe_mobile_custom/app/widget/timeline.dart';
 import 'package:get/get.dart';
 import '../../../config/frappe_palette.dart';
 import '../../../form/control.dart';
@@ -57,8 +58,8 @@ class FormView extends GetView<FormController> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 0,
+                    vertical:12,
+                    horizontal: 8,
                   ),
                   child:   _showActionButton(formController, context)
                   ,
@@ -67,20 +68,27 @@ class FormView extends GetView<FormController> {
 
               ],
             ),
-            body: formController.isLoading?const Center(child: CircularProgressIndicator(),):SingleChildScrollView(
-                child: FormBuilder(
-                  key: _formHelper.getKey(),
-                  enabled: ![1,2].contains(formController.doc['docstatus']),
-                  onChanged: (){
-                    _formHelper.save();
-                    formController.handleChange();
-                  },
-                  child: Column(
-                      children: generateLayout(
-                        fields: formController.fields,
-                        doc: formController.doc,
-                      )
-                  ),
+            body: formController.isLoading?const Center(child: CircularProgressIndicator(),)
+                :SingleChildScrollView(
+                child: Column(
+                  children: [
+                    FormBuilder(
+                      key: _formHelper.getKey(),
+                      enabled: ![1,2].contains(formController.doc['docstatus']),
+                      onChanged: (){
+                        _formHelper.save();
+                        formController.handleChange();
+                      },
+                      child: Column(
+                          children: generateLayout(
+                            fields: formController.fields,
+                            doc: formController.doc,
+                          )
+                      ),
+                    ),
+                    Timeline(
+                        docinfo: formController.docInfo!, doctype: docType, name: name,refreshCallback:()=>formController.getDocInfo() ,)
+                  ],
                 )
             ),
           ),
