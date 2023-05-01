@@ -5,6 +5,7 @@ import 'package:frappe_mobile_custom/app/api/frappe_api.dart';
 
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../config/config.dart';
 import '../config/frappe_icons.dart';
 import '../generic/model/get_doc_response.dart';
 import '../utils/frappe_icon.dart';
@@ -12,15 +13,16 @@ import '../utils/frappe_icon.dart';
 
 
 class CommentBox extends StatelessWidget {
+  final Map userInfo;
   final Comment data;
   final Function callback;
 
-  CommentBox(this.data, this.callback);
+  CommentBox(this.data, this.callback, this.userInfo);
 
   @override
   Widget build(BuildContext context) {
     var time = timeago.format(DateTime.parse(data.creation));
-    String commenterName;
+    String commenterName = userInfo[data.owner]['fullname'];
 
 
     return Padding(
@@ -34,13 +36,13 @@ class CommentBox extends StatelessWidget {
           children: [
             ListTile(
               title: Text(
-                'a',
+                commenterName,
                 style: TextStyle(
                   fontSize: 13,
                 ),
               ),
               subtitle: Text("commented $time"),
-              trailing: "nivajasingh359@gmail.com" == data.owner
+              trailing: Config.get('user') == data.owner
                   ? IconButton(
                 padding: EdgeInsets.zero,
                 icon: FrappeIcon(
@@ -52,8 +54,15 @@ class CommentBox extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text('Are you sure?'),
+                        title: Text('Delete This Comment?'),
                         actions: <Widget>[
+
+                          TextButton(
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
                           TextButton(
                             child: Text('Yes'),
                             onPressed: () async {
@@ -61,12 +70,6 @@ class CommentBox extends StatelessWidget {
                               await FrappeAPI
                                   .deleteComment(data.name);
                               callback();
-                            },
-                          ),
-                          TextButton(
-                            child: Text('No'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
                             },
                           )
                         ],

@@ -35,6 +35,7 @@ class GetDocResponse {
 }
 
 class Docinfo {
+  late Map userInfo;
   late List<Attachments> attachments;
   late List<AttachmentLogs>? attachmentLogs;
   late List<Communication> communications;
@@ -56,6 +57,7 @@ class Docinfo {
   String? documentEmail;
 
   Docinfo({
+    required this.userInfo,
     required this.attachments,
     this.attachmentLogs,
     required this.communications,
@@ -78,6 +80,7 @@ class Docinfo {
   });
 
   Docinfo.fromJson(Map<String, dynamic> json) {
+    userInfo = json['user_info'];
     if (json['attachments'] != null) {
       attachments = [];
       json['attachments'].forEach((v) {

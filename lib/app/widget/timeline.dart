@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frappe_mobile_custom/app/api/frappe_api.dart';
+import 'package:frappe_mobile_custom/app/config/config.dart';
+import 'package:frappe_mobile_custom/app/widget/comment_input_box.dart';
+import 'package:frappe_mobile_custom/app/widget/frappe_button.dart';
 
 
 import 'package:timelines/timelines.dart' as timeline;
@@ -44,14 +48,24 @@ class Timeline extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-                Text(
-                  "Communication Only",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 13,
-                    color: FrappePalette.grey[700],
-                  ),
-                ),
+                FrappeFlatButton(
+                  onPressed: (){
+                    showDialog(context: context,
+                        builder: (context){
+                          return CommentInputBox(
+                              refresh: refreshCallback,
+                              onSave: (String content) async{
+                                await FrappeAPI.postComment(doctype, name,content, Config.get('user'));
+                              }
+                          );
+                        }
+                    );
+                  },
+                  title: 'Add Comment',
+                  buttonType: ButtonType.primary,
+
+
+                )
               ],
             ),
           ),
@@ -68,19 +82,16 @@ class Timeline extends StatelessWidget {
             if (event is Comment) {
               children.add(
                 CommentBox(
+
                   event,
                       () {
                     refreshCallback();
                   },
+                  docinfo.userInfo,
                 ),
               );
             } else {
-
-
               children.add(DocVersion(event));
-
-
-
             }
           }catch (e){}}
 
