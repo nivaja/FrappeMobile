@@ -36,7 +36,6 @@ class NewFormController extends GetxController {
   }
 
   Future<dio.Response> saveDoc() async {
-    late dio.Response res;
     List<DoctypeField> list = fields.value.where((_) => (['Attach Image']
         .contains(_.fieldtype) && _.allowInQuickEntry == 1)).toList();
     for(var field in list ){
@@ -50,16 +49,8 @@ class NewFormController extends GetxController {
             .getKey()
             .currentState!
             .fields[field.fieldname]!.didChange(response.uploadedFile.fileUrl);
-        res = await FrappeAPI.saveDocs(docType,formHelper.getFormValue());
-
-      }
-      else {
-        // Remove null image URL from form state
-        Map<String, dynamic> formValue = Map.from(formHelper.getFormValue());
-        formValue[field.fieldname] = null;
-         res = await FrappeAPI.saveDocs(docType,formValue);
       }
     }
-    return res;
+    return await FrappeAPI.saveDocs(docType,formHelper.getFormValue());
   }
 }
