@@ -1,8 +1,5 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
-import 'package:frappe_mobile_custom/app/generic/common.dart';
+
 import 'package:frappe_mobile_custom/app/utils/frappe_alert.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get.dart';
 import '../../../api/frappe_api.dart';
 import '../../../generic/model/doc_type_response.dart';
@@ -13,6 +10,7 @@ class FormController extends GetxController {
   late final String docType;
   late final String name;
   DoctypeResponse? docTypeDoc;
+  Docinfo? docInfo;
   var isDirty = false;
   bool isLoading = true;
 
@@ -28,12 +26,19 @@ class FormController extends GetxController {
   void onInit() async{
 
     await loadDoc();
+    await getDocInfo();
     super.onInit();
 
   }
 
-  Future loadDoc({CachePolicy cachePolicy=CachePolicy.forceCache}) async{
-    docTypeDoc = await FrappeAPI.getDoctype(docType,cachePolicy: cachePolicy);
+  Future getDocInfo()async{
+    isLoading = true;
+    docInfo=await FrappeAPI.getDocinfo(docType,name);
+    isLoading = false;
+    update([name]);
+  }
+  Future loadDoc() async{
+    docTypeDoc = await FrappeAPI.getDoctype(docType);
     fields = docTypeDoc!.docs[0].fields;
     GetDocResponse dr = await FrappeAPI.getDoc(docType,name);
     doc= dr.docs[0] as Map<String,dynamic>;

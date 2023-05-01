@@ -35,6 +35,7 @@ class LoginController extends GetxController {
       await Config.set('loginRequest', loginRequest);
       if (response.statusCode == HttpStatus.ok) {
         Config.set('isLoggedIn', true);
+        Config.set('user',loginRequest['usr']);
         await ApiService.initCookies();
         Get.offAll(()=>HomePage(),binding: HomeBinding());
       } else {
