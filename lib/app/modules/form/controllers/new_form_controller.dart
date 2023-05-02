@@ -53,7 +53,9 @@ class NewFormController extends GetxController {
       }
     }
     dio.Response res = await FrappeAPI.saveDocs(docType,formHelper.getFormValue());
-    Get.find<DocTypeListViewController>(tag: docType).addItem(res.data['docs'][0]);
+    if (Get.isRegistered<DocTypeListViewController>(tag: docType)) {
+      Get.find<DocTypeListViewController>(tag: docType).addItem(res.data['docs'][0]);
+    }
     return res;
   }
 }
