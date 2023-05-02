@@ -39,6 +39,7 @@ Widget makeControl({
         control = LinkField(
           doctypeField: field,
           doc: doc,
+          controller: TextEditingController(),
         );
       }
       break;
