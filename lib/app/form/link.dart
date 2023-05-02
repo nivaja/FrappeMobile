@@ -164,7 +164,6 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
               if (docName != null) {
                 setState(() {
                   widget.controller?.text = docName;
-                  //
                 });
               }
               Get.delete<NewFormController>(tag: widget.doctypeField.options);
