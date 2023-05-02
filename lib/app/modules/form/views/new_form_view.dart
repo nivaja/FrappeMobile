@@ -43,7 +43,7 @@ class NewFormView extends StatelessWidget {
             ),
             child:  FrappeFlatButton(
               buttonType: ButtonType.primary,
-              title: 'save',
+              title: 'Save',
               onPressed: () {
                 if(formHelper.saveAndValidate()){
                   AwesomeDialog(
