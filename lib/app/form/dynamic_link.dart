@@ -6,7 +6,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:frappe_mobile_custom/app/api/frappe_api.dart';
 
-
 import '../config/frappe_icons.dart';
 import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
@@ -67,7 +66,7 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
     // }
 
     if ((widget.doc[widget.doctypeField.fieldname] != null &&
-        widget.doctypeField.setOnlyOnce == 1) ||
+            widget.doctypeField.setOnlyOnce == 1) ||
         widget.doctypeField.readOnly == 1) {
       enabled = false;
     } else {
@@ -105,21 +104,21 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
         decoration: Palette.formFieldDecoration(
           label: widget.doctypeField.label,
           suffixIcon: widget.doc[widget.doctypeField.fieldname] != null &&
-              widget.doc[widget.doctypeField.fieldname] != ""
+                  widget.doc[widget.doctypeField.fieldname] != ""
               ? IconButton(
-            onPressed: () {
-              // pushNewScreen(
-              //   context,
-              //   screen: FormView(
-              //       doctype: widget.doc[widget.doctypeField.options],
-              //       name: widget.doc[widget.doctypeField.fieldname]),
-              // );
-            },
-            icon: FrappeIcon(
-              FrappeIcons.arrow_right_2,
-              size: 14,
-            ),
-          )
+                  onPressed: () {
+                    // pushNewScreen(
+                    //   context,
+                    //   screen: FormView(
+                    //       doctype: widget.doc[widget.doctypeField.options],
+                    //       name: widget.doc[widget.doctypeField.fieldname]),
+                    // );
+                  },
+                  icon: FrappeIcon(
+                    FrappeIcons.arrow_right_2,
+                    size: 14,
+                  ),
+                )
               : null,
         ),
         selectionToTextTransformer: (item) {
@@ -132,7 +131,7 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
         },
         name: widget.doctypeField.fieldname,
         itemBuilder: widget.itemBuilder ??
-                (context, item) {
+            (context, item) {
               if (item is Map) {
                 return ListTile(
                   title: Text(
@@ -140,8 +139,8 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
                   ),
                   subtitle: item["description"] != null
                       ? Text(
-                    item["description"],
-                  )
+                          item["description"],
+                        )
                       : null,
                 );
               } else {
@@ -151,21 +150,23 @@ class _DynamicLinkState extends State<DynamicLink> with ControlInput {
               }
             },
         suggestionsCallback: widget.suggestionsCallback ??
-                (query) async {
+            (query) async {
               var lowercaseQuery = query.toLowerCase();
 
               var response = await FrappeAPI.searchLink(
-                doctype: widget.doc[widget.doctypeField.options],
-                txt: lowercaseQuery,
-                refDoctype:widget.doctypeField.parent,
-                filters:jsonDecode(widget.doctypeField.description??"{}")
-              );
+                  doctype: widget.doc[widget.doctypeField.options],
+                  txt: lowercaseQuery,
+                  refDoctype: widget.doctypeField.parent,
+                  filters: jsonDecode(widget.doctypeField.description ?? "{}"));
 
               return response["results"];
             },
         noItemsFoundBuilder: (context) {
-          return TextButton(onPressed: () {},
-              child: Row(children: const [Icon(Icons.add), Text('Add New')],));
+          return TextButton(
+              onPressed: () {},
+              child: Row(
+                children: const [Icon(Icons.add), Text('Add New')],
+              ));
         },
       ),
     );

@@ -12,17 +12,18 @@ class NewFormController extends GetxController {
   final String docType;
   FormHelper formHelper;
   RxList<DoctypeField> fields = <DoctypeField>[].obs;
-  var newDoc={}.obs;
+  var newDoc = {}.obs;
+
   NewFormController({required this.docType, required this.formHelper});
 
   @override
-  void onInit() async{
+  void onInit() async {
     await getFields();
     super.onInit();
   }
 
-  Future getFields({CachePolicy cachePolicy=CachePolicy.forceCache}) async{
-    var res = await FrappeAPI.getDoctype(docType,cachePolicy: cachePolicy);
+  Future getFields({CachePolicy cachePolicy = CachePolicy.forceCache}) async {
+    var res = await FrappeAPI.getDoctype(docType, cachePolicy: cachePolicy);
     fields.value = res.docs[0].fields;
     fields.forEach((field) {
       var defaultVal = field.defaultValue;
@@ -37,24 +38,29 @@ class NewFormController extends GetxController {
   }
 
   Future<dio.Response> saveDoc() async {
-    List<DoctypeField> list = fields.value.where((_) => (['Attach Image']
-        .contains(_.fieldtype) && _.allowInQuickEntry == 1)).toList();
-    for(var field in list ){
-      var formState =formHelper.getKey().currentState!.fields[field.fieldname]!;
-      if(formState.value != null) {
+    List<DoctypeField> list = fields.value
+        .where((_) => (['Attach Image'].contains(_.fieldtype) &&
+            _.allowInQuickEntry == 1))
+        .toList();
+    for (var field in list) {
+      var formState =
+          formHelper.getKey().currentState!.fields[field.fieldname]!;
+      if (formState.value != null) {
         //Upload Image First before saving doc and get image url
-        UploadedFileResponse response = await FrappeAPI
-            .uploadImage(
+        UploadedFileResponse response = await FrappeAPI.uploadImage(
             doctype: docType, filePath: formState.value);
         formHelper
             .getKey()
             .currentState!
-            .fields[field.fieldname]!.didChange(response.uploadedFile.fileUrl);
+            .fields[field.fieldname]!
+            .didChange(response.uploadedFile.fileUrl);
       }
     }
-    dio.Response res = await FrappeAPI.saveDocs(docType,formHelper.getFormValue());
+    dio.Response res =
+        await FrappeAPI.saveDocs(docType, formHelper.getFormValue());
     if (Get.isRegistered<DocTypeListViewController>(tag: docType)) {
-      Get.find<DocTypeListViewController>(tag: docType).addItem(res.data['docs'][0]);
+      Get.find<DocTypeListViewController>(tag: docType)
+          .addItem(res.data['docs'][0]);
     }
     return res;
   }
