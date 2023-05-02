@@ -1,5 +1,4 @@
 
-import 'dart:ffi';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
@@ -69,7 +68,6 @@ class NewFormView extends StatelessWidget {
                         FrappeAlert.successAlert(title: '$docType saved');
 
                       }
-
                     },
                   ).show();
                 }}
