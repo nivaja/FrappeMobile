@@ -1,5 +1,4 @@
 
-import 'dart:ffi';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
@@ -55,13 +54,20 @@ class NewFormView extends StatelessWidget {
                     btnOkOnPress: ()async{
                       dio.Response res =
                       await Get.find<NewFormController>(tag: docType).saveDoc();
-                      !getData?
-                      Get.off(
-                              ()=>FormView(name: res.data['docs'][0]['name'], docType: docType),
-                          binding: FormBinding(docType: docType, name: res.data['docs'][0]['name'])
-                      ):
-                      Navigator.pop(context,res.data);
-                      FrappeAlert.successAlert(title: '$docType saved');
+                      if(!getData) {
+                        Get.off(
+                                () =>
+                                FormView(name: res.data['docs'][0]['name'],
+                                    docType: docType),
+                            binding: FormBinding(docType: docType,
+                                name: res.data['docs'][0]['name'])
+                        );
+                      }else {
+
+                        Navigator.pop(context, res.data['docs'][0]['name']);
+                        FrappeAlert.successAlert(title: '$docType saved');
+
+                      }
                     },
                   ).show();
                 }}

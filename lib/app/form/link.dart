@@ -5,9 +5,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:frappe_mobile_custom/app/api/frappe_api.dart';
+import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
+import 'package:get/get.dart';
 import '../config/frappe_icons.dart';
 import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
+import '../modules/form/controllers/new_form_controller.dart';
+import '../modules/form/views/new_form_view.dart';
 import '../utils/frappe_icon.dart';
 import '../widget/form_builder_typeahead.dart';
 import 'control.dart';
@@ -45,6 +49,7 @@ class LinkField extends StatefulWidget {
 }
 
 class _LinkFieldState extends State<LinkField> with ControlInput {
+
   @override
   Widget build(BuildContext context) {
     List<String? Function(dynamic)> validators = [];
@@ -137,39 +142,39 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
         suggestionsCallback: widget.suggestionsCallback ??
                 (query) async {
               var lowercaseQuery = query.toLowerCase();
-                var response = await FrappeAPI.searchLink(
+              var response = await FrappeAPI.searchLink(
                   doctype: widget.doctypeField.options,
                   txt: lowercaseQuery,
                   refDoctype: widget.doctypeField.parent,
-                    filters:jsonDecode(widget.doctypeField.description??"{}")
-                );
+                  filters:jsonDecode(widget.doctypeField.description??"{}")
+              );
 
-                return response["results"];
+              return response["results"];
 
             },
-    //     noItemsFoundBuilder: (context) {
-    //       return TextButton(
-    //           onPressed: () async{
-    //             // Get.to(()=>NewFormView(docType: widget.doctypeField.fieldname));
-    //             print(widget.doctypeField.options);
-    //             var a = await Navigator.push(context,
-    //               MaterialPageRoute(
-    //                 builder: (context) =>  NewFormView(docType: widget.doctypeField.options,getData: true,),
-    //               ),
-    //             );
-    //     // print('a-> $a');
-    // }, child: Row(
-    //         children: [
-    //           Icon(Icons.add),
-    //           Text('Add New ${widget.doctypeField.options}')
-    //         ],
-    //       ),
-    //
-    //         // print(data);
-    //
-    //
-    //       );
-    //     },
+        noItemsFoundBuilder: (context) {
+          return TextButton(
+            onPressed: () async{
+              var docName = await Navigator.push(context, MaterialPageRoute(
+                  builder: (context)
+                  =>NewFormView(docType: widget.doctypeField.options, formHelper: FormHelper(),getData: true,)
+              )
+
+              );
+              if (docName != null) {
+                setState(() {
+                  widget.controller?.text = docName;
+                });
+              }
+              Get.delete<NewFormController>(tag: widget.doctypeField.options);
+            }, child: Row(
+            children: [
+              Icon(Icons.add),
+              Text('Add New ${widget.doctypeField.options}')
+            ],
+          ),
+          );
+        },
       ),
     );
   }
