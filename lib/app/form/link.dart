@@ -5,9 +5,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:frappe_mobile_custom/app/api/frappe_api.dart';
+import 'package:get/get.dart';
 import '../config/frappe_icons.dart';
 import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
+import '../modules/form/controllers/new_form_controller.dart';
+import '../modules/form/views/new_form_view.dart';
+import '../utils/form_helper.dart';
 import '../utils/frappe_icon.dart';
 import '../widget/form_builder_typeahead.dart';
 import 'control.dart';
@@ -147,31 +151,7 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
                 return response["results"];
 
             },
-<<<<<<< Updated upstream
-    //     noItemsFoundBuilder: (context) {
-    //       return TextButton(
-    //           onPressed: () async{
-    //             // Get.to(()=>NewFormView(docType: widget.doctypeField.fieldname));
-    //             print(widget.doctypeField.options);
-    //             var a = await Navigator.push(context,
-    //               MaterialPageRoute(
-    //                 builder: (context) =>  NewFormView(docType: widget.doctypeField.options,getData: true,),
-    //               ),
-    //             );
-    //     // print('a-> $a');
-    // }, child: Row(
-    //         children: [
-    //           Icon(Icons.add),
-    //           Text('Add New ${widget.doctypeField.options}')
-    //         ],
-    //       ),
-    //
-    //         // print(data);
-    //
-    //
-    //       );
-    //     },
-=======
+
         noItemsFoundBuilder: (context) {
           return TextButton(
             onPressed: () async{
@@ -194,7 +174,7 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
           ),
           );
         },
->>>>>>> Stashed changes
+
       ),
     );
   }

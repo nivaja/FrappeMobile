@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:frappe_mobile_custom/app/modules/list/controllers/list_view_controller.dart';
-import 'package:frappe_mobile_custom/app/modules/list/views/list_view_view.dart';
 import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
 import 'package:get/get.dart';
 
