@@ -55,6 +55,7 @@ class NewFormView extends StatelessWidget {
                     btnOkOnPress: ()async{
                       dio.Response res =
                       await Get.find<NewFormController>(tag: docType).saveDoc();
+<<<<<<< Updated upstream
                       !getData?
                       Get.off(
                               ()=>FormView(name: res.data['docs'][0]['name'], docType: docType),
@@ -62,6 +63,23 @@ class NewFormView extends StatelessWidget {
                       ):
                       Navigator.pop(context,res.data);
                       FrappeAlert.successAlert(title: '$docType saved');
+=======
+                      if(!getData) {
+                        Get.off(
+                                () =>
+                                FormView(name: res.data['docs'][0]['name'],
+                                    docType: docType),
+                            binding: FormBinding(docType: docType,
+                                name: res.data['docs'][0]['name'])
+                        );
+                      }else {
+
+                        Navigator.pop(context, res.data['docs'][0]['name']);
+                        FrappeAlert.successAlert(title: '$docType saved');
+
+                      }
+
+>>>>>>> Stashed changes
                     },
                   ).show();
                 }}

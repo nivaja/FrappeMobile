@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:frappe_mobile_custom/app/modules/list/controllers/list_view_controller.dart';
+import 'package:frappe_mobile_custom/app/modules/list/views/list_view_view.dart';
 import 'package:frappe_mobile_custom/app/utils/form_helper.dart';
 import 'package:get/get.dart';
 
@@ -51,6 +53,8 @@ class NewFormController extends GetxController {
             .fields[field.fieldname]!.didChange(response.uploadedFile.fileUrl);
       }
     }
-    return await FrappeAPI.saveDocs(docType,formHelper.getFormValue());
+    dio.Response res = await FrappeAPI.saveDocs(docType,formHelper.getFormValue());
+    Get.find<DocTypeListViewController>(tag: docType).addItem(res.data['docs'][0]);
+    return res;
   }
 }

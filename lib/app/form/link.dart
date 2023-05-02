@@ -147,6 +147,7 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
                 return response["results"];
 
             },
+<<<<<<< Updated upstream
     //     noItemsFoundBuilder: (context) {
     //       return TextButton(
     //           onPressed: () async{
@@ -170,6 +171,30 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
     //
     //       );
     //     },
+=======
+        noItemsFoundBuilder: (context) {
+          return TextButton(
+            onPressed: () async{
+              var docName = await Navigator.push(context, MaterialPageRoute(
+                  builder: (context)
+                  =>NewFormView(docType: widget.doctypeField.options, formHelper: FormHelper(),getData: true,)
+              )
+              );
+              if (docName != null) {
+                setState(() {
+                  widget.controller?.text = docName;
+                });
+              }
+              Get.delete<NewFormController>(tag: widget.doctypeField.options);
+            }, child: Row(
+            children: [
+              Icon(Icons.add),
+              Text('Add New ${widget.doctypeField.options}')
+            ],
+          ),
+          );
+        },
+>>>>>>> Stashed changes
       ),
     );
   }
