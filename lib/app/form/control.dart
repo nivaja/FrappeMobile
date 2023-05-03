@@ -23,8 +23,6 @@ import 'link.dart';
 import 'select.dart';
 import 'time.dart';
 
-
-
 Widget makeControl({
   required DoctypeField field,
   required Map doc,
@@ -39,6 +37,7 @@ Widget makeControl({
         control = LinkField(
           doctypeField: field,
           doc: doc,
+          controller: TextEditingController(),
         );
       }
       break;
@@ -137,7 +136,7 @@ Widget makeControl({
 
     case "Attach Image":
       {
-          control = ImageField(
+        control = ImageField(
           doctypeField: field,
           doc: doc,
         );
@@ -226,23 +225,23 @@ Widget makeControl({
       }
       break;
 
-  // case "Signature":
-  //   {
-  //     control = customSignature.Signature(
-  //       doc: doc,
-  //       doctypeField: field,
-  //     );
-  //   }
-  //   break;
+    // case "Signature":
+    //   {
+    //     control = customSignature.Signature(
+    //       doc: doc,
+    //       doctypeField: field,
+    //     );
+    //   }
+    //   break;
 
-  // case "Barcode":
-  //   {
-  //     control = FormBuilderBarcode(
-  //       doctypeField: field,
-  //       doc: doc,
-  //     );
-  //   }
-  //   break;
+    // case "Barcode":
+    //   {
+    //     control = FormBuilderBarcode(
+    //       doctypeField: field,
+    //       doc: doc,
+    //     );
+    //   }
+    //   break;
 
     default:
       control = Container();
@@ -260,8 +259,6 @@ Widget makeControl({
     );
   }
 }
-
-
 
 Widget buildDecoratedControl({
   required Widget control,
@@ -305,14 +302,11 @@ Widget buildDecoratedControl({
   );
 }
 
-
-
-List<Widget> generateLayout({
-  required List<DoctypeField> fields,
-  // required OnControlChanged onControlChanged,
-  required Map doc,
-  List<Widget>? customControls
-}) {
+List<Widget> generateLayout(
+    {required List<DoctypeField> fields,
+    // required OnControlChanged onControlChanged,
+    required Map doc,
+    List<Widget>? customControls}) {
   List<Widget> collapsibles = [];
   List<Widget> widgets = [];
   List<Widget> sections = [];
@@ -326,8 +320,8 @@ List<Widget> generateLayout({
   int cIdx = 0;
   int sIdx = 0;
 
-  fields.where((_) => _.allowInQuickEntry==1).forEach(
-        (field) {
+  fields.where((_) => _.allowInQuickEntry == 1).forEach(
+    (field) {
       var fieldVisibility = field.pVisible == 1;
 
       var controlWidget = Visibility(
@@ -374,41 +368,41 @@ List<Widget> generateLayout({
               visible: sectionVisibility == "true",
               child: sectionLabel != ''
                   ? Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 10.0,
-                ),
-                child: ListTileTheme(
-                  tileColor: Colors.white,
-                  child: CustomExpansionTile(
-                    maintainState: true,
-                    initiallyExpanded: true,
-                    title: Text(
-                      sectionLabel,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                      padding: const EdgeInsets.only(
+                        bottom: 10.0,
+                      ),
+                      child: ListTileTheme(
+                        tileColor: Colors.white,
+                        child: CustomExpansionTile(
+                          maintainState: true,
+                          initiallyExpanded: true,
+                          title: Text(
+                            sectionLabel,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
+                          ),
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              child: Column(
+                                children: [...sections],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 10.0,
+                      ),
+                      child: Section(
+                        title: sectionLabel,
+                        children: [...sections],
                       ),
                     ),
-                    children: [
-                      Container(
-                        color: Colors.white,
-                        child: Column(
-                          children: [...sections],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              )
-                  : Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 10.0,
-                ),
-                child: Section(
-                  title: sectionLabel,
-                  children: [...sections],
-                ),
-              ),
             ),
           );
 
@@ -492,41 +486,41 @@ List<Widget> generateLayout({
         visible: sectionVisibility == "true",
         child: sectionLabel != ''
             ? Padding(
-          padding: const EdgeInsets.only(
-            bottom: 10.0,
-          ),
-          child: ListTileTheme(
-            tileColor: Colors.white,
-            child: CustomExpansionTile(
-              maintainState: true,
-              initiallyExpanded: true,
-              title: Text(
-                sectionLabel,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+                padding: const EdgeInsets.only(
+                  bottom: 10.0,
+                ),
+                child: ListTileTheme(
+                  tileColor: Colors.white,
+                  child: CustomExpansionTile(
+                    maintainState: true,
+                    initiallyExpanded: true,
+                    title: Text(
+                      sectionLabel,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                    ),
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [...sections],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(
+                  top: 10.0,
+                ),
+                child: Section(
+                  title: sectionLabel,
+                  children: [...sections],
                 ),
               ),
-              children: [
-                Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: [...sections],
-                  ),
-                )
-              ],
-            ),
-          ),
-        )
-            : Padding(
-          padding: const EdgeInsets.only(
-            top: 10.0,
-          ),
-          child: Section(
-            title: sectionLabel,
-            children: [...sections],
-          ),
-        ),
       ),
     );
 
@@ -572,19 +566,18 @@ List<Widget> generateLayout({
     cIdx += 1;
     collapsibles.clear();
   }
-  if(customControls != null){
+  if (customControls != null) {
     widgets.addAll(customControls);
   }
 
   return widgets;
 }
 
-
 class ControlInput {
   String? Function(dynamic) Function(BuildContext, {String errorText})?
-  setMandatory(
-      DoctypeField doctypeField,
-      ) {
+      setMandatory(
+    DoctypeField doctypeField,
+  ) {
     if (doctypeField.reqd == 1) {
       return FormBuilderValidators.required;
     } else {
@@ -600,4 +593,3 @@ class ControlInput {
     }
   }
 }
-

@@ -5,9 +5,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:frappe_mobile_custom/app/api/frappe_api.dart';
+import 'package:get/get.dart';
 import '../config/frappe_icons.dart';
 import '../config/palette.dart';
 import '../generic/model/doc_type_response.dart';
+import '../modules/form/controllers/new_form_controller.dart';
+import '../modules/form/views/new_form_view.dart';
+import '../utils/form_helper.dart';
 import '../utils/frappe_icon.dart';
 import '../widget/form_builder_typeahead.dart';
 import 'control.dart';
@@ -46,6 +50,14 @@ class LinkField extends StatefulWidget {
 
 class _LinkFieldState extends State<LinkField> with ControlInput {
   @override
+  void initState() {
+    if(widget.doc != null && widget.doc?[widget.doctypeField.fieldname] !=null ) {
+      widget.controller?.text = widget.doc?[widget.doctypeField.fieldname];
+    }
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     List<String? Function(dynamic)> validators = [];
     var f = setMandatory(widget.doctypeField);
@@ -77,33 +89,32 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
           var val = item is String
               ? item
               : item is Map
-              ? item["value"]
-              : null;
+                  ? item["value"]
+                  : null;
           if (widget.onSuggestionSelected != null) {
             widget.onSuggestionSelected!(val);
           }
-
         },
         validator: FormBuilderValidators.compose(validators),
         decoration: Palette.formFieldDecoration(
           label: widget.doctypeField.label,
           suffixIcon: widget.doc?[widget.doctypeField.fieldname] != null &&
-              widget.doc?[widget.doctypeField.fieldname] != ""
+                  widget.doc?[widget.doctypeField.fieldname] != ""
               ? IconButton(
-            onPressed: () {
-              // Get.to(FormView(name: widget.doc![widget.doctypeField.fieldname], docType: widget.doctypeField.options));
-              // pushNewScreen(
-              //   context,
-              //   screen: FormView(
-              //       doctype: widget.doctypeField.options,
-              //       name: widget.doc![widget.doctypeField.fieldname]),
-              // );
-            },
-            icon: const FrappeIcon(
-              FrappeIcons.arrow_right_2,
-              size: 14,
-            ),
-          )
+                  onPressed: () {
+                    // Get.to(FormView(name: widget.doc![widget.doctypeField.fieldname], docType: widget.doctypeField.options));
+                    // pushNewScreen(
+                    //   context,
+                    //   screen: FormView(
+                    //       doctype: widget.doctypeField.options,
+                    //       name: widget.doc![widget.doctypeField.fieldname]),
+                    // );
+                  },
+                  icon: const FrappeIcon(
+                    FrappeIcons.arrow_right_2,
+                    size: 14,
+                  ),
+                )
               : null,
         ),
         selectionToTextTransformer: (item) {
@@ -116,7 +127,7 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
         },
         name: widget.doctypeField.fieldname,
         itemBuilder: widget.itemBuilder ??
-                (context, item) {
+            (context, item) {
               if (item is Map) {
                 return ListTile(
                   title: Text(
@@ -124,8 +135,8 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
                   ),
                   subtitle: item["description"] != null
                       ? Text(
-                    item["description"],
-                  )
+                          item["description"],
+                        )
                       : null,
                 );
               } else {
@@ -135,41 +146,42 @@ class _LinkFieldState extends State<LinkField> with ControlInput {
               }
             },
         suggestionsCallback: widget.suggestionsCallback ??
-                (query) async {
+            (query) async {
               var lowercaseQuery = query.toLowerCase();
-                var response = await FrappeAPI.searchLink(
+              var response = await FrappeAPI.searchLink(
                   doctype: widget.doctypeField.options,
                   txt: lowercaseQuery,
                   refDoctype: widget.doctypeField.parent,
-                    filters:jsonDecode(widget.doctypeField.description??"{}")
-                );
+                  filters: jsonDecode(widget.doctypeField.description ?? "{}"));
 
-                return response["results"];
-
+              return response["results"];
             },
-    //     noItemsFoundBuilder: (context) {
-    //       return TextButton(
-    //           onPressed: () async{
-    //             // Get.to(()=>NewFormView(docType: widget.doctypeField.fieldname));
-    //             print(widget.doctypeField.options);
-    //             var a = await Navigator.push(context,
-    //               MaterialPageRoute(
-    //                 builder: (context) =>  NewFormView(docType: widget.doctypeField.options,getData: true,),
-    //               ),
-    //             );
-    //     // print('a-> $a');
-    // }, child: Row(
-    //         children: [
-    //           Icon(Icons.add),
-    //           Text('Add New ${widget.doctypeField.options}')
-    //         ],
-    //       ),
-    //
-    //         // print(data);
-    //
-    //
-    //       );
-    //     },
+        noItemsFoundBuilder: (context) {
+          return TextButton(
+            onPressed: () async {
+              var docName = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NewFormView(
+                            docType: widget.doctypeField.options,
+                            formHelper: FormHelper(),
+                            getData: true,
+                          )));
+              if (docName != null) {
+                setState(() {
+                  widget.controller?.text = docName;
+                });
+              }
+              Get.delete<NewFormController>(tag: widget.doctypeField.options);
+            },
+            child: Row(
+              children: [
+                Icon(Icons.add),
+                Text('Add New ${widget.doctypeField.options}')
+              ],
+            ),
+          );
+        },
       ),
     );
   }

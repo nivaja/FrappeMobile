@@ -24,12 +24,9 @@ class DocTypeListViewController extends GetxController {
         pageLength: 10
     );
     list.isNotEmpty?refreshController?.loadComplete():refreshController?.loadNoData();
-
-
     docList.addAll(list);
     update([docType]);
   }
-
 
   Future onRefresh()async{
     var list = await FrappeAPI.fetchList(
@@ -41,6 +38,11 @@ class DocTypeListViewController extends GetxController {
     );
     docList.clear();
     docList.addAll(list);
+    update([docType]);
+  }
+
+  addItem(dynamic item){
+    docList.insert(0,item);
     update([docType]);
   }
 
