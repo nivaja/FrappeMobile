@@ -445,7 +445,6 @@ class FrappeAPI{
 
   static logout() async{
     await ApiService.dio!.post('/method/logout');
-    await ApiService.getCacheOptions()..store?.clean();
   }
 
   static Future getDocinfo(String doctype, String name) async {
@@ -464,6 +463,43 @@ class FrappeAPI{
 
     if (response.statusCode == 200) {
       return Docinfo.fromJson(response.data["docinfo"]);
+    } else {
+      throw Exception('Something went wrong');
+    }
+  }
+
+  static Future<List<DoctypeField>> getSessionDefaults() async {
+    var response = await ApiService.dio!.get(
+      '/method/frappe.core.doctype.session_default_settings.session_default_settings.get_session_default_values',
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode ==304 ) {
+      List res =json.decode(response.data["message"]);
+      return res.map((field) => DoctypeField.fromJson(field)).toList();
+
+    } else {
+      throw Exception('Something went wrong');
+    }
+  }
+
+
+  static Future<List<DoctypeField>> setSessionDefaults(Map<String,dynamic> data) async {
+    data ={'default_values':data};
+    var response = await ApiService.dio!.post(
+      'method/frappe.core.doctype.session_default_settings.session_default_settings.set_session_default_values',
+      data: json.encode(data),
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        )
+          );
+
+    if (response.statusCode == 200) {
+      List res =json.decode(response.data["message"]);
+      return res.map((field) => DoctypeField.fromJson(field)).toList();
+
     } else {
       throw Exception('Something went wrong');
     }

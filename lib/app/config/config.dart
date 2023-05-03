@@ -10,6 +10,7 @@ class Config {
       Uri.decodeFull(configContainer.read('userId'));
 
   String get user => configContainer.read('user');
+  String get username => configContainer.read('username');
 
   String? get primaryCacheKey {
     if (baseUrl == null || userId == null) return null;
