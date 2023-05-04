@@ -111,7 +111,7 @@ class ProfileView extends StatelessWidget {
                      fullWidth: true,
                      onPressed: () async {
                        await FrappeAPI.logout();
-                       Config.clear();
+                       Config.set('isLoggedIn', false);
                        await ApiService.getCacheOptions()..store?.clean();
                        Get.offAll(()=>LoginView());
                      },

@@ -486,21 +486,15 @@ class FrappeAPI{
   }
 
 
-  static Future<List<DoctypeField>> setSessionDefaults(Map<String,dynamic> data) async {
+  static Future<void> setSessionDefaults(Map<String,dynamic> data) async {
     data ={'default_values':data};
     var response = await ApiService.dio!.post(
-      'method/frappe.core.doctype.session_default_settings.session_default_settings.set_session_default_values',
-      data: json.encode(data),
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        )
+      '/method/frappe.core.doctype.session_default_settings.session_default_settings.set_session_default_values',
+      data: data,
+
           );
 
-    if (response.statusCode == 200) {
-      List res =json.decode(response.data["message"]);
-      return res.map((field) => DoctypeField.fromJson(field)).toList();
-
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('Something went wrong');
     }
   }

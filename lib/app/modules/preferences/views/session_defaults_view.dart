@@ -32,14 +32,13 @@ class SessionDefaultsView extends StatelessWidget {
                 maskType: EasyLoadingMaskType.black,
                 indicator: const CircularProgressIndicator(backgroundColor: Colors.white),
                 status: 'Please Wait...',);
-              // await FrappeAPI.setSessionDefaults(formHelper.getFormValue());
-              await Config.set('sessionDefaults', formHelper.getFormValue());
-              print(Config.get('sessionDefaults'));
+              formHelper.save();
+              await FrappeAPI.setSessionDefaults(formHelper.getFormValue());
               FrappeAlert.successAlert(title: 'Defaults Saved');
             }
-            // catch (e){
-            //   FrappeAlert.errorAlert(title: 'Something Went Wrong');
-            // }
+            catch (e){
+              FrappeAlert.errorAlert(title: 'Something Went Wrong');
+            }
             finally {
               EasyLoading.dismiss();
             }
@@ -54,7 +53,10 @@ class SessionDefaultsView extends StatelessWidget {
             return JustFormView(
               onlyAllowedInQuickEntry: false,
               formHelper: formHelper,
-              doc: Config.get('sessionDefaults')??{},
+              doc: Map.fromIterable(snapshot.data!,
+                key: (item) => item.fieldname,
+                value: (item) => item.defaultValue,
+              ),
               fields: snapshot.data!,
             );
           }else if(snapshot.hasError){
