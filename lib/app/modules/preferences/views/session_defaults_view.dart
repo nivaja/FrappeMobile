@@ -42,7 +42,7 @@ class SessionDefaultsView extends StatelessWidget {
             finally {
               EasyLoading.dismiss();
             }
-          }, buttonType: ButtonType.primary, title: 'save'),
+          }, buttonType: ButtonType.primary, title: 'Save'),
         )
       ]
       ),
