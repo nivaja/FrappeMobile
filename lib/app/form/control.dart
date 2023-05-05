@@ -306,7 +306,10 @@ List<Widget> generateLayout(
     {required List<DoctypeField> fields,
     // required OnControlChanged onControlChanged,
     required Map doc,
-    List<Widget>? customControls}) {
+    List<Widget>? customControls,
+    bool onlyAllowedInQuickEntry=true
+    }
+    ) {
   List<Widget> collapsibles = [];
   List<Widget> widgets = [];
   List<Widget> sections = [];
@@ -319,8 +322,11 @@ List<Widget> generateLayout(
 
   int cIdx = 0;
   int sIdx = 0;
+  if(onlyAllowedInQuickEntry){
+    fields=fields.where((_) => _.allowInQuickEntry == 1).toList();
+  }
 
-  fields.where((_) => _.allowInQuickEntry == 1).forEach(
+  fields.forEach(
     (field) {
       var fieldVisibility = field.pVisible == 1;
 

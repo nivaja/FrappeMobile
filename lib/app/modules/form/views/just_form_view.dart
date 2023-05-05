@@ -11,8 +11,10 @@ class JustFormView extends GetView {
   final FormHelper formHelper;
   final List<DoctypeField> fields;
   final Map doc;
+  bool onlyAllowedInQuickEntry;
 
-  const JustFormView({
+  JustFormView({
+    this.onlyAllowedInQuickEntry=true,
     required this.formHelper,
     required this.fields,
     required this.doc,
@@ -29,6 +31,7 @@ class JustFormView extends GetView {
         child: SingleChildScrollView(
           child: Column(
             children: generateLayout(
+              onlyAllowedInQuickEntry: onlyAllowedInQuickEntry,
               fields: fields,
               doc: doc,
             ),

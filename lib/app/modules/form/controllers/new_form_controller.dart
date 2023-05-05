@@ -24,15 +24,17 @@ class NewFormController extends GetxController {
 
   Future getFields({CachePolicy cachePolicy = CachePolicy.forceCache}) async {
     var res = await FrappeAPI.getDoctype(docType, cachePolicy: cachePolicy);
+    var sessionDefaults = await FrappeAPI.getSessionDefaults();
     fields.value = res.docs[0].fields;
-    fields.forEach((field) {
-      var defaultVal = field.defaultValue;
-
+    for (var field in fields.value) {
+      var sessionDefault = sessionDefaults
+          .firstWhereOrNull((element) => element.fieldname == field.fieldname);
+      var defaultVal = sessionDefault?.defaultValue ?? field.defaultValue;
       if (field.fieldtype == "Table") {
         defaultVal = [];
       }
       newDoc.value[field.fieldname] = defaultVal;
-    });
+    }
     fields.refresh();
     update([docType]);
   }
