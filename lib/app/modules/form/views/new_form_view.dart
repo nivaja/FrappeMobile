@@ -65,9 +65,10 @@ class NewFormView extends StatelessWidget {
                       }else {
 
                         Navigator.pop(context, res.data['docs'][0]['name']);
-                        FrappeAlert.successAlert(title: '$docType saved');
+
 
                       }
+                      FrappeAlert.successAlert(title: '$docType saved');
                     },
                   ).show();
                 }}

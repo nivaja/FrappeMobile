@@ -30,7 +30,7 @@ class ProfileView extends StatelessWidget {
                    height: 8,
                  ),
                  CircularUserAvatar(
-                   fullName: Config.get('username'),
+                   fullName: Config.get('username')??'',
                    size: 120,
 
                  ),
