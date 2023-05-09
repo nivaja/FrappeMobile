@@ -14,19 +14,20 @@ import '../generic/model/get_doc_response.dart';
 import '../generic/model/upload_file_response.dart';
 import '../utils/utils.dart';
 
-class FrappeAPI{
-  static Future<DoctypeResponse> getDoctype(String doctype,{CachePolicy cachePolicy=CachePolicy.forceCache}) async {
+class FrappeAPI {
+  static Future<DoctypeResponse> getDoctype(String doctype,
+      {CachePolicy cachePolicy = CachePolicy.forceCache}) async {
     var queryParams = {
       'doctype': doctype,
     };
     try {
-      CacheOptions cacheOptions =await ApiService.getCacheOptions();
-      final response = await ApiService.dio!.get('/method/frappe.desk.form.load.getdoctype',
+      CacheOptions cacheOptions = await ApiService.getCacheOptions();
+      final response = await ApiService.dio!.get(
+          '/method/frappe.desk.form.load.getdoctype',
           queryParameters: queryParams,
-          options: cacheOptions.copyWith(policy: cachePolicy).toOptions()
-      );
+          options: cacheOptions.copyWith(policy: cachePolicy).toOptions());
 
-      if (response.statusCode == HttpStatus.ok || response.statusCode ==304) {
+      if (response.statusCode == HttpStatus.ok || response.statusCode == 304) {
         List metaFields = response.data["docs"][0]["fields"];
         response.data["docs"][0]["field_map"] = {};
 
@@ -87,7 +88,6 @@ class FrappeAPI{
     }
 
     try {
-
       final response = await ApiService.dio!.get(
         '/method/frappe.desk.search.search_link',
         queryParameters: queryParams,
@@ -158,8 +158,8 @@ class FrappeAPI{
     }
   }
 
-
-  static Future<Map> runDocMethod(String docType, String name,String method) async {
+  static Future<Map> runDocMethod(
+      String docType, String name, String method) async {
     var queryParams = {
       'run_method': method,
     };
@@ -169,11 +169,9 @@ class FrappeAPI{
         '/resource/$docType/$name',
         queryParameters: queryParams,
       );
-      if(response.statusCode ==200 || response.statusCode == 304){
+      if (response.statusCode == 200 || response.statusCode == 304) {
         return response.data;
-      }
-
-      else if (response.statusCode == 403) {
+      } else if (response.statusCode == 403) {
         throw ErrorResponse(
           statusCode: response.statusCode,
           statusMessage: response.statusMessage,
@@ -198,22 +196,19 @@ class FrappeAPI{
     }
   }
 
-
-  static Future<List> fetchList({
-    required String doctype,
-    List? fieldnames,
-    String? orderBy,
-    List? filters,
-    int? pageLength,
-    int? offset,
-    CachePolicy cachePolicy = CachePolicy.forceCache
-  }) async {
+  static Future<List> fetchList(
+      {required String doctype,
+      List? fieldnames,
+      String? orderBy,
+      List? filters,
+      int? pageLength,
+      int? offset,
+      CachePolicy cachePolicy = CachePolicy.forceCache}) async {
     var queryParams = {
       'doctype': doctype,
       'fields': jsonEncode(fieldnames),
       'page_length': pageLength.toString(),
-      'order_by':'modified desc'
-
+      'order_by': 'modified desc'
     };
 
     queryParams['limit_start'] = offset.toString();
@@ -223,13 +218,12 @@ class FrappeAPI{
     }
 
     try {
-      CacheOptions cacheOptions =await ApiService.getCacheOptions();
+      CacheOptions cacheOptions = await ApiService.getCacheOptions();
       final response = await ApiService.dio!.get(
           '/method/frappe.desk.reportview.get',
           queryParameters: queryParams,
-          options: cacheOptions.copyWith(policy: cachePolicy).toOptions()
-      );
-      if (response.statusCode == HttpStatus.ok || response.statusCode==304) {
+          options: cacheOptions.copyWith(policy: cachePolicy).toOptions());
+      if (response.statusCode == HttpStatus.ok || response.statusCode == 304) {
         var l = response.data["message"];
         var newL = [];
 
@@ -243,18 +237,13 @@ class FrappeAPI{
             var key = l["keys"][j];
             var value = l["values"][i][j];
 
-
             o[key] = value;
           }
           newL.add(o);
         }
 
-
         return newL;
-      }
-
-
-      else if (response.statusCode == HttpStatus.forbidden) {
+      } else if (response.statusCode == HttpStatus.forbidden) {
         throw ErrorResponse(
           statusCode: response.statusCode,
           statusMessage: response.statusMessage,
@@ -273,18 +262,16 @@ class FrappeAPI{
         } else {
           throw ErrorResponse(statusMessage: error.message);
         }
-      }
-      else {
+      } else {
         rethrow;
       }
     }
   }
 
-  static Future updateDocs({
-    required String docType,
-    required String name,
-    required Map data
-  }) async {
+  static Future updateDocs(
+      {required String docType,
+      required String name,
+      required Map data}) async {
     try {
       final response = await ApiService.dio!.put(
         '/resource/$docType/$name',
@@ -323,7 +310,6 @@ class FrappeAPI{
         throw ErrorResponse();
       }
     }
-
   }
 
   static Future saveDocs(String doctype, Map formValue) async {
@@ -332,12 +318,13 @@ class FrappeAPI{
       ...formValue,
     };
 
-
     try {
       EasyLoading.show(
         maskType: EasyLoadingMaskType.black,
-        indicator: const CircularProgressIndicator(backgroundColor: Colors.white),
-        status: 'Please Wait...',);
+        indicator:
+            const CircularProgressIndicator(backgroundColor: Colors.white),
+        status: 'Please Wait...',
+      );
       final response = await ApiService.dio!.post(
         '/method/frappe.desk.form.save.savedocs',
         data: "doc=${Uri.encodeComponent(json.encode(data))}&action=Save",
@@ -376,7 +363,7 @@ class FrappeAPI{
       } else {
         throw ErrorResponse();
       }
-    }finally{
+    } finally {
       EasyLoading.dismiss();
     }
   }
@@ -400,6 +387,7 @@ class FrappeAPI{
       throw Exception('Something went wrong');
     }
   }
+
   static Future deleteComment(String name) async {
     var queryParams = {
       'doctype': 'Comment',
@@ -424,13 +412,9 @@ class FrappeAPI{
     String? filename,
     required String filePath,
   }) async {
-
     String fileName = filename ?? filePath.split('/').last;
-    final file = await MultipartFile.fromFile(filePath,filename: fileName);
-    final formData = FormData.fromMap({
-      "file": file,
-      "is_private": 0
-    });
+    final file = await MultipartFile.fromFile(filePath, filename: fileName);
+    final formData = FormData.fromMap({"file": file, "is_private": 0});
 
     var response = await ApiService.dio!.post(
       "/method/upload_file",
@@ -443,7 +427,7 @@ class FrappeAPI{
     }
   }
 
-  static logout() async{
+  static logout() async {
     await ApiService.dio!.post('/method/logout');
   }
 
@@ -476,23 +460,20 @@ class FrappeAPI{
       ),
     );
 
-    if (response.statusCode == 200 || response.statusCode ==304 ) {
-      List res =json.decode(response.data["message"]);
+    if (response.statusCode == 200 || response.statusCode == 304) {
+      List res = json.decode(response.data["message"]);
       return res.map((field) => DoctypeField.fromJson(field)).toList();
-
     } else {
       throw Exception('Something went wrong');
     }
   }
 
-
-  static Future<void> setSessionDefaults(Map<String,dynamic> data) async {
-    data ={'default_values':data};
+  static Future<void> setSessionDefaults(Map<String, dynamic> data) async {
+    data = {'default_values': data};
     var response = await ApiService.dio!.post(
       '/method/frappe.core.doctype.session_default_settings.session_default_settings.set_session_default_values',
       data: data,
-
-          );
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Something went wrong');

@@ -7,44 +7,44 @@ import '../../../api/frappe_api.dart';
 class DocTypeListViewController extends GetxController {
   //TODO: Implement ListViewController
   String docType;
+
   DocTypeListViewController({required this.docType});
 
-  var docList=[];
+  var docList = [];
 
   @override
-  void onInit() async{
+  void onInit() async {
     getDocList();
     super.onInit();
   }
-  Future getDocList({RefreshController? refreshController}) async{
+
+  Future getDocList({RefreshController? refreshController}) async {
     List list = await FrappeAPI.fetchList(
         doctype: docType,
         fieldnames: ['*'],
         offset: docList.length,
-        pageLength: 10
-    );
-    list.isNotEmpty?refreshController?.loadComplete():refreshController?.loadNoData();
+        pageLength: 10);
+    list.isNotEmpty
+        ? refreshController?.loadComplete()
+        : refreshController?.loadNoData();
     docList.addAll(list);
     update([docType]);
   }
 
-  Future onRefresh()async{
+  Future onRefresh() async {
     var list = await FrappeAPI.fetchList(
         doctype: docType,
         fieldnames: ['*'],
         offset: 0,
         pageLength: 10,
-      cachePolicy: CachePolicy.noCache
-    );
+        cachePolicy: CachePolicy.noCache);
     docList.clear();
     docList.addAll(list);
     update([docType]);
   }
 
-  addItem(dynamic item){
-    docList.insert(0,item);
+  addItem(dynamic item) {
+    docList.insert(0, item);
     update([docType]);
   }
-
-
 }

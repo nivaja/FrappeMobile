@@ -6,6 +6,7 @@ import '../generic/model/doc_type_response.dart';
 import '../widget/form_builder_check_box.dart';
 import 'control.dart';
 import 'package:flutter/material.dart';
+
 class Check extends StatelessWidget with ControlInput {
   final DoctypeField doctypeField;
   final Key? key;
@@ -35,13 +36,12 @@ class Check extends StatelessWidget with ControlInput {
       name: doctypeField.fieldname,
       key: key,
       enabled:
-      doctypeField.readOnly != null ? doctypeField.readOnly == 0 : true,
+          doctypeField.readOnly != null ? doctypeField.readOnly == 0 : true,
       valueTransformer: (val) {
         return val == true ? 1 : 0;
       },
       activeColor: FrappePalette.blue,
       initialValue: doc != null ? doc![doctypeField.fieldname] == 1 : null,
-
       label: Text(
         doctypeField.label!,
         style: TextStyle(
