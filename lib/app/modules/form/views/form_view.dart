@@ -104,11 +104,11 @@ class FormView extends GetView<FormController> {
     final isDirty = formController.isDirty;
 
     if (docstatus == 0 && !isDirty) {
-      return _actionButton(formController, context,'submit',btnOkOnPress: ()=>formController.submitDoc());
+      return _actionButton(formController, context,'Submit',btnOkOnPress: ()=>formController.submitDoc());
     } else if (docstatus == 1) {
-      return _actionButton(formController, context,'cancel',btnOkOnPress: ()=>formController.cancelDoc());
+      return _actionButton(formController, context,'Cancel',btnOkOnPress: ()=>formController.cancelDoc());
     } else if (docstatus == 0 && isDirty) {
-      return _actionButton(formController, context,'save',btnOkOnPress: ()=>formController.updateDoc( _formHelper.getFormValue()));
+      return _actionButton(formController, context,'Save',btnOkOnPress: ()=>formController.updateDoc( _formHelper.getFormValue()));
     }
     return null;
   }
