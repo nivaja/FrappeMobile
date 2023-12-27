@@ -348,7 +348,8 @@ class _OpenStreetMapSearchAndPickState
     String url =
         'https://nominatim.openstreetmap.org/reverse?format=json&lat=${_mapController.center.latitude}&lon=${_mapController.center.longitude}&zoom=18&addressdetails=1';
 
-    var response = await client.post(Uri.parse(url));
+
+    var response = await client.get(Uri.parse(url));
     var decodedResponse =
     jsonDecode(utf8.decode(response.bodyBytes)) as Map<dynamic, dynamic>;
     String displayName = decodedResponse['display_name'];
