@@ -64,7 +64,6 @@ class LoginController extends GetxController {
               " Please ensure that the server has a valid SSL configuration.",
         );
       }
-
       rethrow;
     }finally{
       EasyLoading.dismiss();
